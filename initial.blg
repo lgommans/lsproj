@@ -1,0 +1,64 @@
+This is BibTeX, Version 0.99d (TeX Live 2016/Debian)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: initial.aux
+The style file: biblatex.bst
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=20001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: initial-blx.bib
+Database file #2: references.bib
+Biblatex version: 3.3
+Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+You've used 6 entries,
+            6256 wiz_defined-function locations,
+            1201 strings with 9538 characters,
+and the built_in function-call counts, 41860 in all, are:
+= -- 2745
+> -- 1633
+< -- 187
++ -- 1860
+- -- 1160
+* -- 2882
+:= -- 5142
+add.period$ -- 0
+call.type$ -- 6
+change.case$ -- 43
+chr.to.int$ -- 126
+cite$ -- 10
+duplicate$ -- 3857
+empty$ -- 3519
+format.name$ -- 377
+if$ -- 7655
+int.to.chr$ -- 0
+int.to.str$ -- 10
+missing$ -- 0
+newline$ -- 217
+num.names$ -- 205
+pop$ -- 1827
+preamble$ -- 1
+purify$ -- 78
+quote$ -- 0
+skip$ -- 940
+stack$ -- 0
+substring$ -- 5339
+swap$ -- 885
+text.length$ -- 192
+text.prefix$ -- 5
+top$ -- 1
+type$ -- 192
+warning$ -- 0
+while$ -- 554
+width$ -- 0
+write$ -- 212
