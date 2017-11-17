@@ -1,4 +1,5 @@
 \documentclass{article}
+
 \usepackage[]{float}
 \usepackage[utf8]{inputenc}
 \usepackage[]{hyperref}
@@ -16,45 +17,102 @@
 \maketitle
 
 \section{Introduction}
-Multitentant datacenters aim to provide services with high availability and reliability. Some datacenters experience the issue that parts of their networks are sometimes congested, which might result in lower availability. Congestion occurs when a buffer of the receiving network device is full and the network device drops packets. TCP has a mechanism to avoid congestion in the network: TCP congestion control. Multiple algorithms are available for congestion control and show a different behaviour depending on the network's characteristics. In 2010 algorithm DCTCP was described in an article \cite{dctcp-congestion-original} and published as RFC8257 in 2017 \cite{dctcp-congestion}. DCTCP is optimized for datacenters and provides a high-burst tolerance, low latency, and high throughput when the datacenter has a small part of the buffer available \cite{dctcp-congestion}. In 2016 one algorithm was proposed: BBR. BBR is a TCP congestion algorithm created by Google that achieves higher bandwidths and lower latencies compared to other TCP congestion methods \cite{bbr-congestion}. A comparison of BBR with CUBIC \cite{bbr-congestion-comparison} shows that the BBR node pushes the CUBIC node away in bandwidth when using small buffers. The BBR node gets more bandwidth allocated than the CUBIC node.
 
-We propose to do a performance and behaviour analysis of different TCP congestion control algorithms in a datacenter network. Based on the results we will recommend datacenters on measures to keep providing an available and reliable environment for customers when multiple congestion control algorithms active in the network.
+Multitentant datacenters aim to provide services with high availability and
+reliability. Some datacenters experience the issue that parts of their networks
+are sometimes congested, which might result in lower availability. Congestion
+occurs when a buffer of the receiving network device is full and the network
+device drops packets. TCP has a mechanism to avoid congestion in the network:
+TCP congestion control. Multiple algorithms are available for congestion
+control and show a different behaviour depending on the network's
+characteristics. In 2010 algorithm DCTCP was described in an article
+\cite{dctcp-congestion-original} and published as RFC8257 in 2017
+\cite{dctcp-congestion}. DCTCP is optimized for datacenters and provides a
+high-burst tolerance, low latency, and high throughput when the datacenter has
+a small part of the buffer available \cite{dctcp-congestion}. In 2016 one
+algorithm was proposed: BBR. BBR is a TCP congestion algorithm created by
+Google that achieves higher bandwidths and lower latencies compared to other
+TCP congestion methods \cite{bbr-congestion}. A comparison of BBR with CUBIC
+\cite{bbr-congestion-comparison} shows that the BBR node pushes the CUBIC node
+away in bandwidth when using small buffers. The BBR node gets more bandwidth
+allocated than the CUBIC node.
+
+We propose to do a performance and behaviour analysis of different TCP
+congestion control algorithms in a datacenter network. Based on the results we
+will recommend datacenters on measures to keep providing an available and
+reliable environment for customers when multiple congestion control algorithms
+active in the network.
+
 
 \section{Research Questions}
-Our main research question is: How can a datacenter provide an available and reliable environment for customers when multiple TCP congestion control algorithms are used in the network?
-\\ \\
+
+Our main research question is: How can a datacenter provide an available and
+reliable environment for customers when multiple TCP congestion control
+algorithms are used in the network?
+
 This main research question divides in five sub questions:
+
 \begin{enumerate}
-\item What TCP congestion algorithms are mostly implemented in datacenter environments?
-\item How do the TCP congestion algorithms work?
-\item How do the TCP congestion algorithms differ in behavior?
-\item What is the impact on the availability and service for customers when using multiple TCP congestion algorithms?
-\item What connection management measures are able to control the connection when using different congestion control algorithms?
+	\item What TCP congestion algorithms are mostly implemented in datacenter environments?
+	\item How do the TCP congestion algorithms work?
+	\item How do the TCP congestion algorithms differ in behavior?
+	\item What is the impact on the availability and service for customers when using multiple TCP congestion algorithms?
+	\item What connection management measures are able to control the connection when using different congestion control algorithms?
 \end{enumerate}
 
+
 \section{Scope}
-During this research we will focus on at least the TCP congestion control algorithms BBR, CUBIC, DCTCP. Additional congestion control algorithms will be determined after researching what the most implemented TCP congestion algorithms are in datacenter environments. We will conduct a behavior analysis and comparison between those algorithms, including the impact of mixed usage of the algorithms on the availability of a service in a datacenter. We will look at the measures a datacenter has to take to keep their service available and reliable for all customers when running multiple congestion algorithms at the same time.
+
+During this research we will focus on at least the TCP congestion control
+algorithms BBR, CUBIC, DCTCP. Additional congestion control algorithms will be
+determined after researching what the most implemented TCP congestion
+algorithms are in datacenter environments. We will conduct a behavior analysis
+and comparison between those algorithms, including the impact of mixed usage of
+the algorithms on the availability of a service in a datacenter. We will look
+at the measures a datacenter has to take to keep their service available and
+reliable for all customers when running multiple congestion algorithms at the
+same time.
+
 
 \section{Planning}
+
 \begin{table}[H]
-\centering
-\label{my-label}
-\begin{tabular}{l|p{8cm}}
-\textbf{Week} & \textbf{Activity} \\ \hline
-1    & Conducting desk research on TCP congestion control algorithms. Conducting desk research on the congestion and packet loss occuring in different scenarios. Conducting desk research on bandwidth management in data centers. Setup the testing environment. \\
-2    & Finish test environment setup and conduct all tests.\\
-3    & Process the results and start writing the project report.        \\
-4    & Finalize our project report and process the final results. Setting up the presentation and practice it.       
-\end{tabular}
-\caption{Project planning}
+	\centering
+	\label{my-label}
+	\begin{tabular}{l|p{8cm}}
+		\textbf{Week} & \textbf{Activity} \\ \hline
+		1    & Conducting desk research on TCP congestion control algorithms. Conducting desk research on the congestion and packet loss occuring in different scenarios. Conducting desk research on bandwidth management in data centers. Setup the testing environment. \\
+		2    & Finish test environment setup and conduct all tests.\\
+		3    & Process the results and start writing the project report.        \\
+		4    & Finalize our project report and process the final results. Setting up the presentation and practice it.       
+	\end{tabular}
+	\caption{Project planning}
 \end{table}
 
+
 \section{Ethical Considerations}
-For this research we will create a private setup for testing the performance of TCP congestion control algorithms. This research does only involve TCP congestion control algorithms made available publicly. Therefore we do not expect any ethical issues during this research.
+
+For this research we will create a private setup for testing the performance of
+TCP congestion control algorithms. This research does only involve TCP
+congestion control algorithms made available publicly. Therefore we do not
+expect any ethical issues during this research.
+
 
 \section{Related work}
-The TCP congestion control algorithm BBR is discussed in \cite{bbr-congestion}. The journal contains a performance test of the BBR algorithm and a comparison between the BBR algorithm and the CUBIC algorithm, where a noticeable difference in bandwidth allocation is shown when using small buffers. In \cite{multiple-congestion} a performance analysis of multiple TCP congestion control algorithms is performed. This research does not include the new congestion control algorithms we want to analyze and does not include the datacenter context. In \cite{dctcp-congestion-original} an algorithm is proposed to avoid congestion within datacenters. The authors describe an algorithm that maintains a small buffer occupancy and has an early detection of congestion.
+
+The TCP congestion control algorithm BBR is discussed in \cite{bbr-congestion}.
+The journal contains a performance test of the BBR algorithm and a comparison
+between the BBR algorithm and the CUBIC algorithm, where a noticeable
+difference in bandwidth allocation is shown when using small buffers. In
+\cite{multiple-congestion} a performance analysis of multiple TCP congestion
+control algorithms is performed. This research does not include the new
+congestion control algorithms we want to analyze and does not include the
+datacenter context. In \cite{dctcp-congestion-original} an algorithm is
+proposed to avoid congestion within datacenters. The authors describe an
+algorithm that maintains a small buffer occupancy and has an early detection of
+congestion.
 
 \printbibliography
 
 \end{document}
+
