@@ -82,6 +82,8 @@ the algorithms on the performance of a service in a datacenter. We will look at
 the measures a datacenter could take to keep their service performant and
 reliable for all tenants.
 
+\section{Methods}
+Measuring the performance of the TCP congestion control algorithms will be done using a simulation setup. We have checked whether implementations of CUBIC, BBR and DCTCP are available in the network simulation tools ns-3 or ns-2. CUBIC and DCTCP have an implementation for ns-3 \cite{git-tcp-cubic} \cite{git-tcp-dctcp} and also for the Linux kernel. BBR is implemented in the Linux kernel version 4.9 and above. As BBR only has a complete implementation for the Linux kernel, a virtual test environment will be created to test and compare the performance of the algorithms. For algorithms found most common during the research,  it has to be determined whether an implementation is available for those simulation tools.
 
 \section{Planning}
 
