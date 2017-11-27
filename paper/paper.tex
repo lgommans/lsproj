@@ -83,15 +83,36 @@ During this research a performance test of various TCP congestion algorithms wil
 		\item The user owns multiple endpoints in the network. In this case a congestion algorithm is applied at both the client and server side.
 	\end{enumerate}
 	
-	The created environments are shown in figure ... and figure ...
+	The created environments are shown in figure \ref{fig:setup1} and figure \ref{fig:setup2}
+
 	\begin{figure}[H] 
-		\label{fig:setup1}
-		\caption{Test setup: Scenario 1}
-		\begin{center}
+		\centering
+			\caption{Test setup: Scenario 1}
   			\includegraphics[scale=0.5]{figs/setup1.png}
-  		\end{center}
+  		\label{fig:setup1}
 	\end{figure}
 	
+	\begin{figure}[H] 
+		\centering
+			\caption{Test setup: Scenario 2}
+			\includegraphics[scale=0.5]{figs/setup2.png}
+  		\label{fig:setup2}
+	\end{figure}
+	
+	In scenario 1 the server uses the same algorithm as the random node. The user node uses a different algorithm for the comparison. Tests in this scenario cover behavioral differences between TCP congestion algorithms when a user owns one node within a network. In scenario 2 the user server uses the same algorithm as the user node and the random server uses the same algorithm as the random node. Tests in this scenario cover behavioral differences between TCP congestion algorithms when a user owns two nodes within a network.
+	
+	In both scenarios the TCP congestion algorithms are tested for multiple characteristics:
+	\begin{enumerate}
+		\item TCP Window Size measured over time: 
+		\item Bandwidth allocation: to determine whether using a specific TCP congestion algorithm in combination with other TCP congestion algorithms results in the allocation of more bandwidth to a TCP transport.
+		\item Round Trip Time: to determine the reason of the behaviour of a TCP congestion algorithm in combination with other TCP congestion algorithms.
+	\end{enumerate}
+	
+	The tests conducted on the algorithms have different environment variables: packet loss and delay. Those environment variables are simulated using netem, which is a network emulation functionality in several Linux distributions. Packet loss and delay are chosen as the behavior of most TCP algorithms depend on those variables. The values for the environment variables per simulation run are shown in table ...		
+	
+	\subsection{Traffic Management}
+	Desk research will be conducted to gather information related to traffic management. The goal is to find a mechanism that is capable of allocating equally between customers of a datacenter. This is done by analyzing the results from the algorithm comparison and the initial desk research on traffic management. 
+
 \section{Results}
 
 
