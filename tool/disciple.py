@@ -11,7 +11,7 @@ print('Ready to receive commands.')
 
 while True:
     controller, client_address = sock.accept()
-    print('Connection from {}.'.format(client_address))
+    print('Controller connection from {}.'.format(client_address))
     while True:
         data = read(controller)
         if data == 'test':
@@ -21,7 +21,7 @@ while True:
             send(controller, socket.gethostname())
 
         elif data == MSG_BYE:
-            print('Disconnected.')
+            print('Controller disconnected from socket.')
             break
 
         elif data == MSG_SETALGO:
@@ -80,6 +80,7 @@ while True:
 
             client.close() # Should already be closed, since received_data.length==0 earlier, but just to be sure that the listsock doesn't remain in time-wait
             ds.close()
+            print('Closed listening data socket.')
 
             first = float('inf')
             for t in timings:
