@@ -11,6 +11,7 @@ print('Ready to receive commands.')
 
 while True:
     controller, client_address = sock.accept()
+    print('Connected.')
     while True:
         data = read(controller)
         if data == 'test':
@@ -20,6 +21,7 @@ while True:
             send(controller, socket.gethostname())
 
         elif data == MSG_BYE:
+            print('Disconnected.')
             break
 
         elif data == MSG_SETALGO:
@@ -38,6 +40,59 @@ while True:
             print('Set the time to ' + recvtime)
 
             send(controller, time.time())
+
+        elif data == MSG_SEND:
+            dst = read(controller)
+            duration = int(read(controller))
+            when = int(read(controller))
+
+            ds = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            ds.connect((dst, TCPPORT + 1))
+
+            while time.time() < when:
+                pass
+
+            until = when + duration
+            data = b'A' * MTU
+            while time.time() < until:
+                ds.send(data)
+
+            ds.close()
+
+        elif data == MSG_LISTEN:
+            ds = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            ds.bind(('0.0.0.0', TCPPORT + 1))
+            ds.listen(1)
+            print('Listening on data socket, awaiting client.')
+
+            t = int(time.time())
+            timings = {}
+            for i in range(t, t+1000):
+                timings[t] = 0
+
+            client = ds.accept()
+            print('Client connected.')
+            while True:
+                l = len(client.recv(MTU)) ## TODO: "AttributeError: 'tuple' object has no attribute 'recv'"
+                if l == 0:
+                    break
+                timings[int(time.time())] += l
+
+            first = float('inf')
+            for t in timings:
+                count = timings[t]
+                if count > 0 and t < first:
+                    first = t
+
+            results = ''
+            for t in range(first + 1, first + 9):
+                count = timings[t]
+                results += str(count) + ' '
+            results = results.strip()
+
+        elif data == MSG_GETRESULTS:
+            print('Sending results.')
+            send(controller, results)
 
         else:
             print('Unrecognized command')

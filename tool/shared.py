@@ -1,10 +1,14 @@
 MAXMSGLEN = 100
-TCPPORT = 2
+TCPPORT = 1
+MTU = 1400
 
 MSG_GETNAME = 'Dear sir/madam, could you please tell me your name?'
 MSG_BYE = 'If you will excuse me, I have to go catch a bus.'
 MSG_SETALGO = 'Could you please change your TCP congestion control algorithm?'
 MSG_SETTIME = 'Could you synchronize the clock at your earliest convenience?'
+MSG_LISTEN = 'Data will be forthcoming. Observe, hack, make.'
+MSG_SEND = 'ATTACK'
+MSG_GETRESULTS = 'What were the results? :D'
 
 def send(sock, data):
     data = str(data)
