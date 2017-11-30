@@ -69,10 +69,10 @@ congestion within datacenters. The authors describe an algorithm that maintains
 a small buffer occupancy and has an early detection of congestion.
 
 \section{Method}
-During this research a performance test of various TCP congestion algorithms will be performed. The TCP congestion algorithms will be determined through desk research of the most common algorithms. The tests will be conducted in a private environment. Based on the results of those tests, recommendations will be given related to the measures a datacenter has to take to keep the traffic equally allocated over customers. 
+During this research a performance test of various TCP congestion algorithms will be performed. The most common TCP congestion algorithms will be determined through desk research. The tests will be conducted in a private environment. Based on the results of those tests, recommendations will be given related to the measures a datacenter has to take to keep the traffic equally allocated over customers. 
 
 	\subsection{Selecting TCP congestion algorithms}	
-	In order to select the most common TCP congestion algorithms desk research will be performed. Results of scientific reports will show which algorithms are used more often than other algoritms. Based on those results a list of TCP congestion algorithms compatible with a multitenant datacenter environment will be composed.	
+	In order to select the most common TCP congestion algorithms desk research will be performed. Results of scientific reports will show which algorithms are used more often than other algoritms. Based on those results a list of TCP congestion algorithms will be composed.	
 	
 	\subsection{Comparing Performance}
 	One scenario will be used to compare the performance of the TCP congestion algorithms:
@@ -93,24 +93,70 @@ During this research a performance test of various TCP congestion algorithms wil
 	
 	In both scenarios the TCP congestion algorithms are tested for multiple characteristics:
 	\begin{enumerate}
-		\item TCP Window Size measured over time: 
+		\item TCP Window Size measured over time: to determine whether using a specific TCP congestion algorithm in combination with other TCP congestion algorithms results in the allocation of a larger window or a smaller window to a specific TCP connection.
 		\item Bandwidth allocation: to determine whether using a specific TCP congestion algorithm in combination with other TCP congestion algorithms results in the allocation of more bandwidth to a specific TCP connection.
 		\item Round Trip Time: to determine the reason of the behaviour of a TCP congestion algorithm in combination with other TCP congestion algorithms.
 	\end{enumerate}
-The tests conducted on the algorithms have different environment variables: packet loss and delay. Those environment variables are simulated using \texttt{netem}, which is a network emulation functionality in several Linux distributions. Packet loss and delay are chosen as the behavior of most TCP algorithms depend on those variables. The values for the environment variables per simulation run are shown in table ...		
-\\
-\\
-	\begin{tabular}[H]{ | l | l | l |}
-	\hline
-	\textbf{Test} & \textbf{Delay} & \textbf{Packet loss} \\
-	\hline 1 & 0ms & 0\%. \\
-	\hline 2 & 0ms & 0.01\% \\
-	\hline 3 & 0ms & 0.10\% \\
-	\hline 4 & 0ms & 1.0\% \\
-	\hline 1 & 0ms & 10\%. \\
-	\hline
-	\end{tabular}
+The tests conducted on the algorithms have two environment variables: packet loss and delay. Those environment variables are simulated using \texttt{netem}, which is a network emulation functionality in several Linux distributions \cite{linux-netem}. Packet loss and delay are chosen as the behavior of most TCP algorithms depend on those variables. The values for the environment variables are chosen based on measurements performed by Verizon \cite{verizon-latency}.
 
+		\subsubsection{Determining the Packet loss and Delay}
+		The dataset of Verizon \cite{verizon-latency} is used to calculate the packet loss and delay used in this research. The dataset includes global information and shows averages per month over the year 2017. The packet loss is calculated by taking the average of the Verizon Business Packet Delivery Statistics for Country Specific Metrics for each country. Those averages were inverted by subtracting the packet delivery percentage from 100, to show the actual packet loss in percentages and not the packet delivery. Based on the ascending sorted values a bar chart was created. This bar chart is shown in figure \ref{fig:packet-loss-chart}
+		
+	\begin{figure}[H] 
+		\centering
+  			\includegraphics[scale=0.7]{figs/verizon-packetloss.png}
+  			\caption{Average Packet Loss for Country Specific Metrics}
+  		\label{fig:packet-loss-chart}
+	\end{figure}
+
+The country numbers in figure \ref{fig:packet-loss-chart} are only used to show the distribution of the average packet loss. The maximum packet loss shown in figure \ref{fig:packet-loss-chart} equals 0.6\% and the minimum equals 0\%. However, in case of situations where more packet loss occurs than usual, the double value of the maximum is used: 1.2\%. The values for packet loss in this comparison set-up were determined based on the distribution shown in figure \ref{fig:packet-loss-chart} and the manually set maximum of 1.2\%. The values are shown in table \ref{table:test-packetloss}.	
+	
+	\begin{table}[H]
+		\centering
+		\caption{Packet loss percentages used for the comparison setup}
+		\begin{tabular}[H]{ | l |}
+		\hline
+		\textbf{Packet loss} \\
+		\hline 0\%. \\
+		\hline 0.01\% \\
+		\hline 0.1\% \\
+		\hline 0.6\% \\
+		\hline 1.2\% \\
+		\hline
+		\end{tabular}
+		\label{table:test-packetloss}
+	\end{table}
+
+The delay is calculated by taking the average of the Verizon Business Latency Statistics for Country Specific Metrics for each country. Based on the ascending sorted values a bar chart was created. This bar chart is shown in figure \ref{fig:verizon-delay-chart}
+
+	\begin{figure}[H] 
+		\centering
+  			\includegraphics[scale=0.7]{figs/verizon-delay.png}
+  			\caption{Average Latency for Country Specific Metrics}
+  		\label{fig:verizon-delay-chart}
+	\end{figure}
+	
+The country numbers in figure \ref{fig:verizon-delay-chart} are only used to show the distribution of the average delays. The maximum delay shown in figure \ref{fig:verizon-delay-chart} equals 290ms and the minimum equals 8ms (both rounded). The values for delay in this comparison set-up were determined based on the distribution shown in figure \ref{fig:verizon-delay-chart}. The values are shown in table \ref{table:test-delay}.	
+	
+	\begin{table}[H]
+		\centering
+		\caption{Packet loss percentages used for the comparison setup}
+		\begin{tabular}[H]{ | l |}
+		\hline
+		\textbf{Delay} \\
+		\hline  8ms\\
+		\hline  64ms  \\
+		\hline  120ms  \\
+		\hline  176ms \\
+		\hline	232ms \\
+		\hline  290ms  \\
+		\hline
+		\end{tabular}
+		\label{table:test-delay}
+	\end{table}
+
+		\subsubsection{Performing time-based automated tests}
+		The tests will be performed using scripts written in Python [\ref{appendix:python}]. The scripts either act as controller or as disciple. The controller is responsible for controlling the tests, by synchronizing the time, exchanging commands to run, modify or stop the tests and gathering data. The disciple is the listener and executes all task commands the controller sends. The commands include getting the hostname of a disciple, setting the TCP congestion algorithm of a disciple, configuring the time of a disciple, starting the data transfer from a disciple and closing the connection with the controller.
 
 	\subsection{Traffic Management}
 	Desk research will be conducted to gather information related to traffic management. The goal is to find a mechanism that is capable of allocating equally between customers of a datacenter. This is done by analyzing the results from the algorithm comparison and the initial desk research on traffic management. 
@@ -143,7 +189,12 @@ This main research question divides in five sub-questions:
 \end{enumerate}
 
 
-%\printbibliography
+\printbibliography
+
+\appendix
+\section{Python}
+\label{appendix:python}
+SCRIPT
 
 \end{document}
 
