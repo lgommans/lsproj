@@ -11,7 +11,7 @@ print('Ready to receive commands.')
 
 while True:
     controller, client_address = sock.accept()
-    print('Connected.')
+    print('Connection from {}.'.format(client_address))
     while True:
         data = read(controller)
         if data == 'test':
@@ -67,16 +67,19 @@ while True:
 
             t = int(time.time())
             timings = {}
-            for i in range(t, t+1000):
-                timings[t] = 0
+            for i in range(t, t+MAXTESTDURATION):
+                timings[i] = 0
 
-            client = ds.accept()
-            print('Client connected.')
+            client, addr = ds.accept()
+            print('Client {} connected.'.format(addr))
             while True:
-                l = len(client.recv(MTU)) ## TODO: "AttributeError: 'tuple' object has no attribute 'recv'"
+                l = len(client.recv(MTU))
                 if l == 0:
                     break
                 timings[int(time.time())] += l
+
+            client.close() # Should already be closed, since received_data.length==0 earlier, but just to be sure that the listsock doesn't remain in time-wait
+            ds.close()
 
             first = float('inf')
             for t in timings:

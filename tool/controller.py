@@ -44,13 +44,12 @@ for setup in Config.setups:
     print('Sleeping till end of test...')
     time.sleep(duration + 6)
 
-    for host, role in setup['hosts']:
-        if role == 'receiver':
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.connect((host, TCPPORT))
-            send(sock, MSG_GETRESULTS)
-            print(read(sock))
-            send(sock, MSG_BYE)
+    for host_from, host_to in setup['hosts']:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect((host_to, TCPPORT))
+        send(sock, MSG_GETRESULTS)
+        print(read(sock))
+        send(sock, MSG_BYE)
 
     print('Done running setups')
 
