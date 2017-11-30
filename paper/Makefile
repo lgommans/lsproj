@@ -1,5 +1,7 @@
 build:
 	pdflatex -interaction=nonstopmode paper.tex
+	bibtex paper
+	pdflatex paper.tex
 	pdflatex paper.tex
 
 open:
@@ -16,6 +18,7 @@ edit:
 	sensible-editor paper.tex
 
 once:
+	bibtex paper
 	pdflatex -interaction=nonstopmode paper.tex
 
 buildOnChange:
