@@ -4,6 +4,7 @@
 algos = ['cubic', 'ctcp', 'dctcp', 'bic', 'bbr']
 delays = [8, 64, 120, 176, 232, 290]
 losses = [0, 0.01, 0.1, 0.6, 1.2]
+test_duration = 10
 
 hosts = {
     'server1': '10.0.0.6',
@@ -43,5 +44,11 @@ for host in hosts:
 
     send(sock, MSG_BYE)
 
-    #conn_test(host_from, host_to, duration=int(time.time()) + 3)
+for algo1 in algos:
+    for algo2 in algos:
+        for delay in delays:
+            for loss in losses:
+                print('Running algo1={} algo2={} delay={} loss={}'.format(algo1, algo2, delay, loss))
+
+                results.update(runtest(hosts, test_duration, delay, loss, algo1, algo2))
 
