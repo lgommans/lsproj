@@ -3,18 +3,19 @@
 import sys, os, socket, datetime, time
 from shared import *
 
-os.system('''
-ip l | grep ifb0;
-if [ $? -ne 0 ]; then
-    modprobe ifb;
-    ip link set dev ifb0 up;
-    tc qdisc add dev eth0 ingress;
-    tc filter add dev eth0 parent ffff: protocol ip u32 match u32 0 0 flowid 1:1 action mirred egress redirect dev ifb0;
-    echo Setup ifb interface;
-else
-    echo ifb interface already setup;
-fi;
-''')
+if os.name == 'posix':
+    os.system('''
+    ip l | grep ifb0 > /dev/null;
+    if [ $? -ne 0 ]; then
+        modprobe ifb;
+        ip link set dev ifb0 up;
+        tc qdisc add dev eno1 ingress;
+        tc filter add dev eno1 parent ffff: protocol ip u32 match u32 0 0 flowid 1:1 action mirred egress redirect dev ifb0;
+        echo Setup ifb interface;
+    else
+        echo ifb interface already setup;
+    fi;
+    ''')
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.bind(('0.0.0.0', TCPPORT))
