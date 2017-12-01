@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import socket, time
-from config import Config
+from ctrlconfig import Config
 from shared import *
 
 for host in Config.hosts:

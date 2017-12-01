@@ -3,6 +3,19 @@
 import sys, os, socket, datetime, time
 from shared import *
 
+os.system('''
+ip l | grep ifb0;
+if [ $? -ne 0 ]; then
+    modprobe ifb;
+    ip link set dev ifb0 up;
+    tc qdisc add dev eth0 ingress;
+    tc filter add dev eth0 parent ffff: protocol ip u32 match u32 0 0 flowid 1:1 action mirred egress redirect dev ifb0;
+    echo Setup ifb interface;
+else
+    echo ifb interface already setup;
+fi;
+''')
+
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.bind(('0.0.0.0', TCPPORT))
 sock.listen(1)
@@ -48,16 +61,17 @@ while True:
 
             ds = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             ds.connect((dst, TCPPORT + 1))
+            print('Connected to data sink, waiting until ' + str(when))
 
             while time.time() < when:
                 pass
 
             until = when + duration
-            data = b'A' * MTU
             while time.time() < until:
-                ds.send(data)
+                ds.send(TRANSMIT_DATA)
 
             ds.close()
+            print('Done. Disconnecting from data sink.')
 
         elif data == MSG_LISTEN:
             ds = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -97,6 +111,12 @@ while True:
         elif data == MSG_GETRESULTS:
             print('Sending results.')
             send(controller, results)
+
+        elif data == MSG_SETCONNPROPS:
+            loss = read(controller)
+            delay = read(controller)
+            print('Setting delay={} loss={}'.format(delay, loss))
+            os.system('tc qdisc add dev ifb0 root netem delay ' + delay + ' loss ' + loss)
 
         else:
             print('Unrecognized command')
