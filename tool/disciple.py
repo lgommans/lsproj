@@ -112,13 +112,19 @@ while True:
             print('Sending results.')
             send(controller, results)
 
+        elif data == MSG_SETALGO:
+            algo = read(controller)
+            if os.name == 'nt':
+                print('Ignoring setalgo because I am New Technology.')
+            else:
+                print('Setting algo={}'.format(algo))
+                os.system('sysctl net.ipv4.tcp_congestion_control=' + algo)
+
         elif data == MSG_SETCONNPROPS:
             loss = read(controller)
             delay = read(controller)
-            algo = read(controller)
-            print('Setting delay={} loss={} algo={}'.format(delay, loss, algo))
+            print('Setting delay={} loss={}'.format(delay, loss))
             os.system('tc qdisc add dev ifb0 root netem delay ' + delay + ' loss ' + loss)
-            os.system('sysctl net.ipv4.tcp_congestion_control=' + algo)
 
         else:
             print('Unrecognized command')

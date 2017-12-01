@@ -17,7 +17,8 @@ MSG_SETTIME = 'Could you synchronize the clock at your earliest convenience?'
 MSG_LISTEN = 'Data will be forthcoming. Observe, hack, make.'
 MSG_SEND = 'ATTACK'
 MSG_GETRESULTS = 'What were the results? :D'
-MSG_SETCONNPROPS = 'chprops'
+MSG_SETCONNPROPS = 'chprops plz'
+MSG_SETALGO = 'chalgo plz'
 MSG_GETVERSION = 'How old are you, if I may ask?'
 
 def send(sock, data):
