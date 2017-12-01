@@ -47,7 +47,7 @@ CUBIC\cite{bbr-congestion-comparison} shows that the BBR node pushes the CUBIC
 node away in bandwidth when using small buffers. The BBR node gets more
 bandwidth allocated than the CUBIC node.
 
-This report includes a performance and behavior analysis of different TCP congestion control algorithms in a (simulated) multitenant datacenter network. Based on the results, we will recommend datacenters on measures to keep providing a reliable environment for customers when multiple congestion control algoritms are active in the network, for example using Quality of Service or discouraging certain congestion control algorithms. The main research question is: {\it How can a datacenter provide a reliable and performant environment for customers when multiple TCP congestion control algorithms are used in the
+This report includes a performance and behavior analysis of different TCP congestion control algorithms in a (simulated) multitenant datacenter network. Based on the results, we will recommend datacenters on measures to take to keep providing a reliable environment for customers when multiple congestion control algoritms are active in the network, for example using Quality of Service or discouraging certain congestion control algorithms. The main research question is: {\it How can a datacenter provide a reliable and performant environment for customers when multiple TCP congestion control algorithms are used in the
 network?}
 
 \section{Related work}
@@ -207,6 +207,8 @@ The country numbers in figure \ref{fig:verizon-delay-chart} are only used to sho
 	Desk research will be conducted to gather information related to traffic management. The goal is to find a mechanism that is capable of allocating bandwidth equally between customers of a datacenter. This is done by analyzing the results from the algorithm comparison and the initial desk research on traffic management. 
 
 \section{Results}
+Type some text here.
+
 	\subsection{TCP Congestion Algorithms}
 	The most common TCP congestion algorithms are CTCP, CUBIC and BIC. CTCP is the default congestion algorithm in Microsoft Windows Server 2008 and newer \cite{cubic-kernel-version}. CUBIC is the default congestion algorithm in Linux distributions with kernel versions 2.6.19 and higher \cite{cubic-kernel-version}. BIC was the default congestion algorithm in earlier Linux distributions from kernel version 2.6.8 until 2.6.19 \cite{bic-kernel-version} \cite{cubic-kernel-version}. DCTCP and BBR will also be tested as those protocols are newer. DCTCP is specifically designed for datacenters \cite{dctcp-congestion} and BBR is a new congestion protocol not yet widely deployed \cite{bbr-congestion}.
 	
