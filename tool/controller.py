@@ -1,55 +1,47 @@
 #!/usr/bin/env python3
 
-import socket, time
-from ctrlconfig import Config
-from shared import *
+# Settings
+algos = ['cubic', 'ctcp', 'dctcp', 'bic', 'bbr']
+delays = [8, 64, 120, 176, 232, 290]
+losses = [0, 0.01, 0.1, 0.6, 1.2]
 
-for host in Config.hosts:
+hosts = {
+    'server1': '10.0.0.6',
+    'server2': '10.0.0.1',
+    'winserv': '10.0.0.3',
+    'client1': '10.0.0.2',
+    'client2': '10.0.0.4',
+}
+# End of settings
+
+import socket, time
+from shared import *
+from controllerlib import *
+
+hostnames = {}  # Will be automatically obtained
+
+for host in hosts:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect((host['ip'], TCPPORT))
-    send(sock, 'test')
+    sock.connect((hosts[host], TCPPORT))
+
     send(sock, MSG_GETNAME)
     name = read(sock)
-    print('Connected to ' + name + ', syncing time...')
+    hostnames[host] = name
 
+    send(sock, MSG_GETVERSION)
+    version = int(read(sock))
+    if version != VERSION:
+        print('Incompatible client detected: {}|{} (v{} instead of {}). Aborting.'.format(host, name, version, VERSION))
+        exit(2)
+
+    sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
     send(sock, MSG_SETTIME)
-    time.sleep(0.1)
-    starttime = time.time()
+    time.sleep(0.1)  # Sleep briefly, so that the client is definitely ready and blocking on the recv call, awaiting the time
     send(sock, time.time())
-    d = time.time() - float(read(sock))
-    print('Time sync\'d to {0:f} seconds.'.format(d/2))
+    read(sock)  # Unused currently
+    print('Time synchronized with {}|{}.'.format(host, name))
 
     send(sock, MSG_BYE)
-    
-for setup in Config.setups:
-    duration = setup['settings']['duration']
-    name = setup['settings']['name']
-    print("Running setup: " + name)
 
-    for host_from, host_to in setup['hosts']:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect((host_to, TCPPORT))
-        send(sock, MSG_LISTEN)
-        send(sock, MSG_BYE)
-        time.sleep(0.1) # Otherwise the other host apparently tries to connect too fast
-
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect((host_from, TCPPORT))
-        send(sock, MSG_SEND)
-        send(sock, host_to)
-        send(sock, duration)
-        send(sock, int(time.time()) + 3)
-        send(sock, MSG_BYE)
-
-    print('Sleeping till end of test...')
-    time.sleep(duration + 6)
-
-    for host_from, host_to in setup['hosts']:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect((host_to, TCPPORT))
-        send(sock, MSG_GETRESULTS)
-        print(read(sock))
-        send(sock, MSG_BYE)
-
-    print('Done running setups')
+    #conn_test(host_from, host_to, duration=int(time.time()) + 3)
 

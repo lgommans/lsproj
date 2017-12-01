@@ -25,11 +25,14 @@ print('Ready to receive commands.')
 
 while True:
     controller, client_address = sock.accept()
-    print('Controller connection from {}.'.format(client_address))
+    print('Controller connection from {}.\n'.format(client_address))
     while True:
         data = read(controller)
         if data == 'test':
             print('Received connection test at ' + time.ctime())
+
+        elif data == MSG_GETVERSION:
+            send(controller, VERSION)
 
         elif data == MSG_GETNAME:
             send(controller, socket.gethostname())
@@ -38,18 +41,14 @@ while True:
             print('Controller disconnected from socket.')
             break
 
-        elif data == MSG_SETALGO:
-            algo = read(controller)
-            os.system('sysctl net.ipv4.tcp_congestion_control=' + algo)
-
         elif data == MSG_SETTIME:
             recvtime = read(controller)
             if os.name == 'nt':
                 t = datetime.fromtimestamp(float(recvtime))
                 recvtime = t.strftime('%H:%I:%S') + recvtime.split('.')[1][:3]
-                os.system('echo ' + recvtime + ' | recvtime')
+                os.system('echo ' + recvtime + ' | time')
             else:
-                os.system('date -s @' + recvtime)
+                os.system('date -s @' + recvtime + ' >/dev/null')
 
             print('Set the time to ' + recvtime)
 
@@ -116,8 +115,10 @@ while True:
         elif data == MSG_SETCONNPROPS:
             loss = read(controller)
             delay = read(controller)
-            print('Setting delay={} loss={}'.format(delay, loss))
+            algo = read(controller)
+            print('Setting delay={} loss={} algo={}'.format(delay, loss, algo))
             os.system('tc qdisc add dev ifb0 root netem delay ' + delay + ' loss ' + loss)
+            os.system('sysctl net.ipv4.tcp_congestion_control=' + algo)
 
         else:
             print('Unrecognized command')
