@@ -40,6 +40,7 @@ for host in hosts:
     send(sock, MSG_GETNAME)
     name = read(sock)
     hostnames[host] = name
+    hostnames[hosts[host]] = name
 
     send(sock, MSG_GETVERSION)
     version = int(read(sock))
@@ -59,6 +60,8 @@ for host in hosts:
 if kill:
     exit(0)
 
+print('')
+
 results = {}
 
 for algo1 in algos:
@@ -66,7 +69,9 @@ for algo1 in algos:
         for delay in delays:
             for loss in losses:
                 print('Running algo1={} algo2={} delay={} loss={}'.format(algo1, algo2, delay, loss))
-                results.update(runtest(hosts, test_duration, delay, loss, algo1, algo2))
+                results.update(runtest(hosts, hostnames, test_duration, delay, loss, algo1, algo2))
+                print('')
 
 for result in results:
-    print(result + ": " + results[result])
+    print(result + ": " + str(results[result]))
+

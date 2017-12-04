@@ -4,7 +4,7 @@ TCPPORT = 1
 MTU = 1400  # bytes
 MAXTESTDURATION = 1000  # seconds
 CONNTESTGAP = 3  # seconds
-VERSION = 1
+VERSION = 2
 # End of settings
 
 import os
