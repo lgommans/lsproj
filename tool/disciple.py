@@ -88,6 +88,7 @@ try:
                 for i in range(t, t+MAXTESTDURATION):
                     timings[i] = 0
 
+                ds.settimeout(CONNTESTGAP * 3)
                 client, addr = ds.accept()
                 print('Client {} connected.'.format(addr))
                 while True:
