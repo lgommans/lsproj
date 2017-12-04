@@ -7,7 +7,7 @@ losses = [0, 0.01, 0.1, 0.6, 1.2]
 test_duration = 10
 
 hosts = {
-    'server1': '10.0.0.6',
+    'server1': '10.0.0.5',
     'server2': '10.0.0.1',
     'winserv': '10.0.0.3',
     'client1': '10.0.0.2',
@@ -23,6 +23,7 @@ hostnames = {}  # Will be automatically obtained
 
 for host in hosts:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    print(hosts[host])
     sock.connect((hosts[host], TCPPORT))
 
     send(sock, MSG_GETNAME)
@@ -43,6 +44,8 @@ for host in hosts:
     print('Time synchronized with {}|{}.'.format(host, name))
 
     send(sock, MSG_BYE)
+
+results = {}
 
 for algo1 in algos:
     for algo2 in algos:
