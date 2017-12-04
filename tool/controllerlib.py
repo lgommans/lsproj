@@ -51,6 +51,8 @@ def runtest(hosts, test_duration, delay, loss, algo1, algo2):
     else:
         s2 = hosts['server2']
 
+    results = {}
+
     at = time.time() + CONNTESTGAP
     results[tag + 'run=1 s={} c=1'.format(s1)] = conn_test(s1, hosts['client1'], duration=test_duration, loss=loss, delay=delay, algo=algo1, at=at)
     results[tag + 'run=1 s={} c=2'.format(s2)] = conn_test(s2, hosts['client2'], duration=test_duration, loss=loss, delay=delay, algo=algo2, at=at)
