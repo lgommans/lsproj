@@ -131,6 +131,9 @@ try:
                 print('Setting delay={} loss={}'.format(delay, loss))
                 os.system('tc qdisc add dev ifb0 root netem delay ' + delay + ' loss ' + loss)
 
+            elif data == MSG_DIE:
+                exit(0)
+
             else:
                 print('Unrecognized command')
 except Exception as e:

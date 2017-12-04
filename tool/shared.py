@@ -20,6 +20,7 @@ MSG_GETRESULTS = 'What were the results? :D'
 MSG_SETCONNPROPS = 'chprops plz'
 MSG_SETALGO = 'chalgo plz'
 MSG_GETVERSION = 'How old are you, if I may ask?'
+MSG_DIE = 'The end is near'
 
 def send(sock, data):
     data = str(data)

@@ -15,16 +15,26 @@ hosts = {
 }
 # End of settings
 
-import socket, time
+import socket, time, sys
 from shared import *
 from controllerlib import *
+
+kill = False
+if len(sys.argv) == 2 and sys.argv[1] == 'killclients':
+    kill = True
 
 hostnames = {}  # Will be automatically obtained
 
 for host in hosts:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    print(hosts[host])
+    if not kill:
+        print('Connecting to ' + hosts[host])
     sock.connect((hosts[host], TCPPORT))
+
+    if kill:
+        print('Killing ' + hosts[host])
+        send(sock, MSG_DIE)
+        continue
 
     send(sock, MSG_GETNAME)
     name = read(sock)
@@ -44,6 +54,9 @@ for host in hosts:
     print('Time synchronized with {}|{}.'.format(host, name))
 
     send(sock, MSG_BYE)
+
+if kill:
+    exit(0)
 
 results = {}
 
