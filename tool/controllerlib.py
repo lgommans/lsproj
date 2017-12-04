@@ -1,4 +1,6 @@
 from shared import *
+import time
+import socket
 
 def conn_test(host_from, host_to, duration, delay, loss, algo, at):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -36,8 +38,8 @@ def conn_test(host_from, host_to, duration, delay, loss, algo, at):
 
     return results
 
-def runtest(hosts, duration, delay, loss, algo1, algo2):
-    tag = 'algo1={} algo2={} delay={} duration={} '.format(algo1, algo2, delay, duration)
+def runtest(hosts, test_duration, delay, loss, algo1, algo2):
+    tag = 'algo1={} algo2={} delay={} duration={} '.format(algo1, algo2, delay, test_duration)
 
     if algo1 == 'ctcp':
         s1 = hosts['winserv']

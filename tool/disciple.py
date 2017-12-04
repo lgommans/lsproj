@@ -48,7 +48,7 @@ try:
             elif data == MSG_SETTIME:
                 recvtime = read(controller)
                 if os.name == 'nt':
-                    t = datetime.fromtimestamp(float(recvtime))
+                    t = datetime.datetime.fromtimestamp(float(recvtime))
                     recvtime = t.strftime('%H:%I:%S') + recvtime.split('.')[1][:3]
                     os.system('echo ' + recvtime + ' | time')
                 else:
