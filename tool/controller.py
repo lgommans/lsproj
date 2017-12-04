@@ -66,6 +66,7 @@ for algo1 in algos:
         for delay in delays:
             for loss in losses:
                 print('Running algo1={} algo2={} delay={} loss={}'.format(algo1, algo2, delay, loss))
-
                 results.update(runtest(hosts, test_duration, delay, loss, algo1, algo2))
 
+for result in results:
+    print(result + ": " + results[result])
