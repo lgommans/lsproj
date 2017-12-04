@@ -27,6 +27,7 @@ hostnames = {}  # Will be automatically obtained
 
 for host in hosts:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(3)
     if not kill:
         print('Connecting to ' + hosts[host])
     sock.connect((hosts[host], TCPPORT))
