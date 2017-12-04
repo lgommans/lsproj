@@ -140,7 +140,7 @@ except Exception as e:
     err = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     err.settimeout(1)
     try:
-        err.connect((controlleraddr, TCPPORT + 2))
+        err.connect((controlleraddr[0], TCPPORT + 2))
         send(err, 'Error at ' + socket.gethostname() + ': ' + str(e) + '\n\n')
         err.close()
     except:
