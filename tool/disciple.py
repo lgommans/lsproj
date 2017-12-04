@@ -61,7 +61,7 @@ try:
             elif data == MSG_SEND:
                 dst = read(controller)
                 duration = int(read(controller))
-                when = int(read(controller))
+                when = float(read(controller))
 
                 ds = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 ds.connect((dst, TCPPORT + 1))
