@@ -3,7 +3,7 @@ MAXMSGLEN = 100  # bytes
 MTU = 1400  # bytes
 MAXTESTDURATION = 1000  # seconds
 CONNTESTGAP = 3  # seconds
-VERSION = 2
+VERSION = 3
 # End of settings
 
 import os
