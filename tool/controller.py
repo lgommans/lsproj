@@ -4,14 +4,14 @@
 algos = ['cubic', 'ctcp', 'dctcp', 'bic', 'bbr']
 delays = [8, 64, 120, 176, 232, 290]
 losses = [0, 0.01, 0.1, 0.6, 1.2]
-test_duration = 10
+test_duration = 20
 
 hosts = {
-    'server1': '10.0.0.5',
-    'server2': '10.0.0.1',
+    'server1': '10.0.0.1',
+    'server2': '10.0.0.2',
     'winserv': '10.0.0.3',
-    'client1': '10.0.0.2',
-    'client2': '10.0.0.2',
+    'client1': '10.0.0.4',
+    'client2': '10.0.0.4',
 }
 
 # Only non-standard ports need to be mentioned in the ports table.
@@ -21,7 +21,7 @@ ports = {
 }
 # End of settings
 
-import socket, time, sys
+import socket, time, sys, os
 from shared import *
 from controllerlib import *
 
@@ -31,12 +31,30 @@ if len(sys.argv) == 2 and sys.argv[1] == 'killclients':
 
 hostnames = {}  # Will be automatically obtained
 
+if not kill:
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(3)
+    sock.connect((hosts['winserv'], defaultport if 'winserv' not in ports else ports['winserv']))
+
+    send(sock, MSG_GETTIME)
+    starttime = time.time()
+    wintime = read(sock)
+    os.system('date -s @' + wintime + ' >/dev/null')
+    print('Corrected time by ' + str(starttime-float(wintime)) + ' seconds')
+    send(sock, MSG_BYE)
+    sock.close()
+
 for host in hosts:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(3)
     if not kill:
         print('Connecting to ' + hosts[host])
-    sock.connect((hosts[host], defaultport if host not in ports else ports[host]))
+    try:
+        sock.connect((hosts[host], defaultport if host not in ports else ports[host]))
+    except:
+        if not kill:
+            raise
+        continue
 
     if kill:
         print('Killing ' + hosts[host])
@@ -54,14 +72,18 @@ for host in hosts:
         print('Incompatible client detected: {}|{} (v{} instead of {}). Aborting.'.format(host, name, version, VERSION))
         exit(2)
 
-    sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-    send(sock, MSG_SETTIME)
-    time.sleep(0.1)  # Sleep briefly, so that the client is definitely ready and blocking on the recv call, awaiting the time
-    send(sock, time.time())
-    read(sock)  # Unused currently
-    print('Time synchronized with {}|{}.'.format(host, name))
+    if host != 'winserv':
+        # We just got the time from Windows, we don't wanna sync with that
+        sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+        send(sock, MSG_SETTIME)
+        time.sleep(0.1)  # Sleep briefly, so that the client is definitely ready and blocking on the recv call, awaiting the time
+        starttime = time.perf_counter()
+        send(sock, time.time())
+        returntime = float(read(sock))
+        print('Time synchronized with {}|{}. Their time is {} offset from ours. Setting time took {}.'.format(host, name, time.time() - returntime, time.perf_counter() - starttime))
 
     send(sock, MSG_BYE)
+    sock.close()
 
 if kill:
     exit(0)
@@ -69,15 +91,33 @@ if kill:
 print('')
 
 results = {}
+if os.path.isfile('savefile'):
+    savefile = open('savefile').read()
+else:
+    savefile = ''
 
-for algo1 in algos:
-    for algo2 in algos:
-        for delay in delays:
-            for loss in losses:
-                print('Running algo1={} algo2={} delay={} loss={}'.format(algo1, algo2, delay, loss))
-                results.update(runtest(hosts, hostnames, defaultport, ports, test_duration, delay, loss, algo1, algo2))
-                print('')
+savefileout = open('savefile', 'a')
 
-for result in results:
-    print(result + ": " + str(results[result]))
+try:
+    for algo1 in algos:
+        for algo2 in algos:
+            for delay in delays:
+                for loss in losses:
+                    config = 'algo1={} algo2={} delay={} loss={}'.format(algo1, algo2, delay, loss)
+                    if config in savefile:
+                        print('Skipping ' + config + ': already in savefile')
+                        continue
+
+                    print('Running ' + config)
+                    results.update(runtest(hosts, hostnames, defaultport, ports, test_duration, delay, loss, algo1, algo2))
+                    savefileout.write(config + '\n')
+                    print('')
+    raise ':)'
+except: # Catch keyboardinterrupt -- or error but in all cases, the exception will be printed after the results.
+    for result in results:
+        print(result + ": " + str(results[result]))
+
+    sys.stdout.flush()  # flush stdout so it doesn't mix with stderr that will get printed
+
+    raise
 

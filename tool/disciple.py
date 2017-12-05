@@ -37,7 +37,8 @@ print('Ready to receive commands.')
 while True:
     controller, addr = sock.accept()
     controlleraddr = addr
-    print('Controller connection from {}.\n'.format(addr))
+    controller.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    print('\nController connection from {}.'.format(addr))
     while True:
         data = read(controller)
         if data == 'test':
@@ -55,23 +56,39 @@ while True:
 
         elif data == MSG_SETTIME:
             recvtime = read(controller)
+            starttime = time.perf_counter()
+            print('Setting the time to ' + recvtime + ';\n                was ' + str(time.time()))
+
             if os.name == 'nt':
-                t = datetime.datetime.fromtimestamp(float(recvtime))
-                recvtime = t.strftime('%H:%I:%S') + recvtime.split('.')[1][:3]
-                os.system('echo ' + recvtime + ' | time')
+                daysSinceEpoch = int(float(recvtime) / (3600 * 24))
+                remainingSeconds = int(float(recvtime)) - daysSinceEpoch * 3600 * 24
+                h = int(remainingSeconds / 3600)
+                remainingSeconds = remainingSeconds - h * 3600
+                m = int(remainingSeconds / 60)
+                s = remainingSeconds - m * 60
+                frac = recvtime.split('.')[1]
+                t = '{}:{}:{},{}'.format(h + 1, m, s, frac[:2])  # h+1 because of our timezone
+                os.system('echo ' + t + ' | time')
+                print('Converted time to {}.'.format(t))
             else:
                 os.system('date -s @' + recvtime + ' >/dev/null')
 
-            print('Set the time to ' + recvtime)
-
             send(controller, time.time())
-            print("Set time to: " + str(time.time()))
+            settingtimetook = time.perf_counter() - starttime
+            print('Setting time took {} seconds.'.format(settingtimetook))
+
+        elif data == MSG_GETTIME:
+            send(controller, time.time())
 
         elif data == MSG_SEND:
             dst = read(controller)
             dataport = int(read(controller))
             duration = int(read(controller))
             when = float(read(controller))
+
+            if when < time.time():
+                print('Requested time in the past. That isn\'t gonna fly.')
+                exit(4)
 
             ds = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             ds.connect((dst, dataport))
@@ -90,10 +107,10 @@ while True:
         elif data == MSG_LISTEN:
             dataport = int(read(controller))
 
+            print('Starting listening port {} for data, awaiting client.'.format(dataport))
             ds = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             ds.bind(('0.0.0.0', dataport))
             ds.listen(1)
-            print('Listening on port {} for data, awaiting client.'.format(dataport))
 
             t = int(time.time())
             bytecounts = {}
@@ -151,7 +168,13 @@ while True:
             os.system('tc qdisc change dev ifb0 root netem delay ' + delay + ' loss ' + loss)
 
         elif data == MSG_DIE:
+            print('Controller told us to die :(')
             exit(0)
+
+        elif data == '':
+            print('Socket closed unexpectedly.')
+            break
 
         else:
             print('Unrecognized command')
+

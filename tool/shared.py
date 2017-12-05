@@ -3,7 +3,7 @@ MAXMSGLEN = 100  # bytes
 MTU = 1400  # bytes
 MAXTESTDURATION = 1000  # seconds
 CONNTESTGAP = 3  # seconds
-VERSION = 3
+VERSION = 4
 # End of settings
 
 import os
@@ -20,6 +20,7 @@ MSG_SETCONNPROPS = 'chprops plz'
 MSG_SETALGO = 'chalgo plz'
 MSG_GETVERSION = 'How old are you, if I may ask?'
 MSG_DIE = 'The end is near'
+MSG_GETTIME = 'Mind telling me the time?'
 
 def send(sock, data):
     data = str(data)
