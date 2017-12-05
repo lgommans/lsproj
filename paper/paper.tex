@@ -77,7 +77,7 @@ During this research a performance test of various TCP congestion algorithms wil
 	\subsection{Comparing Performance}
 	One scenario will be used to compare the performance of the TCP congestion algorithms:
 	\begin{enumerate}
-		\item The user owns multiple endpoints in the network. In this case a congestion algorithm is applied at both the client and server side. This scenario applies to multitentant datacenter situations, where a user owns a server in the datacenter network and a node outside of the datacenter network.
+		\item The user owns multiple endpoints in the network. In this case a congestion algorithm is applied at both the client and server side. This scenario applies to multitentant datacenter situations, where a user owns a server in the datacenter network and a node outside of the datacenter network. In this test the user node and random node(s) are at the receiving side and the user server and random server at the sending side. The tests will be performed from a multitenant datacenter perspective.
 	\end{enumerate}
 	
 	The created environment is shown in figure \ref{fig:setup1}.
@@ -91,13 +91,12 @@ During this research a performance test of various TCP congestion algorithms wil
 	
 	In scenario 1 the user server uses the same algorithm as the user node and the random server uses the same algorithm as the random node. Tests in this scenario cover behavioral differences between TCP congestion algorithms when a user owns a node in the network of a multitenant datacenter.
 	
-	In both scenarios the TCP congestion algorithms are tested for multiple characteristics:
-	\begin{enumerate}
-		\item TCP Window Size measured over time: to determine whether using a specific TCP congestion algorithm in combination with other TCP congestion algorithms results in the allocation of a larger window or a smaller window to a specific TCP connection.
-		\item Bandwidth allocation: to determine whether using a specific TCP congestion algorithm in combination with other TCP congestion algorithms results in the allocation of more bandwidth to a specific TCP connection.
-		\item Round Trip Time: to determine the reason of the behaviour of a TCP congestion algorithm in combination with other TCP congestion algorithms.
-	\end{enumerate}
-The tests conducted on the algorithms have two environment variables: packet loss and delay. Those environment variables are simulated using \texttt{netem}, which is a network emulation functionality in several Linux distributions \cite{linux-netem}. Packet loss and delay are chosen as the behavior of most TCP algorithms depend on those variables [SRC]. The values for the environment variables are chosen based on measurements performed by Verizon \cite{verizon-latency}.
+	In scenario 1 the TCP congestion algorithm is tested for fairness in sharing bandwidth with other TCP connections using other TCP congestion algorithms. In order to test the fairness of congestion algorithms, the bandwidth allocation per algorithm is measured. It can be determined whether a specific TCP congestion algorithm in combination with other TCP congestion algorithms results in the allocation of more or less bandwidth to that specific TCP connection.
+
+The tests conducted on the algorithms have two environment variables: packet loss and delay. Those environment variables are simulated using \texttt{netem}, which is a network emulation functionality in several Linux distributions \cite{linux-netem}. \texttt{netem} is applied to the incoming side of the interfaces of the clients to emulate the same packet loss and delay. Windows, which is tested as a server, does not support \texttt{netem}. Therefore the packet loss and delay are applied to the incoming interfaces of the clients. Packet loss and delay are chosen as the behavior of most TCP algorithms depends on those variables [SRC]. The values for the environment variables are chosen based on measurements performed by Verizon \cite{verizon-latency}.
+
+%\item TCP Window Size measured over time: to determine whether using a specific TCP congestion algorithm in combination with other TCP congestion algorithms results in the allocation of a larger window or a smaller window to a specific TCP connection.
+% \item Round Trip Time: to determine the reason of the behaviour of a TCP congestion algorithm in combination with other TCP congestion algorithms.
 
 		\subsubsection{Determining the Packet loss and Delay}
 		The dataset of Verizon \cite{verizon-latency} is used to calculate the packet loss and delay used in this research. The dataset includes global information and shows averages per month over the year 2017. The packet loss is calculated by taking the average of the Verizon Business Packet Delivery Statistics for Country Specific Metrics for each country. Those averages were inverted by subtracting the packet delivery percentage from 100, to show the actual packet loss in percentages and not the packet delivery. Based on the ascending sorted values a bar chart was created. This bar chart is shown in figure \ref{fig:packet-loss-chart}
@@ -156,7 +155,7 @@ The country numbers in figure \ref{fig:verizon-delay-chart} are only used to sho
 	\end{table}
 
 		\subsubsection{Performing time-based automated tests}
-		The tests will be performed using scripts written in Python [\ref{appendix:python}]. The scripts either act as controller or as disciple. The controller is responsible for controlling the tests, by synchronizing the time, exchanging commands to run, modify or stop the tests and gathering data. The disciple is the listener and executes all task commands the controller sends. The commands include getting the hostname of a disciple, setting the TCP congestion algorithm of a disciple, configuring the time of a disciple, starting the data transfer from a disciple and closing the connection with the controller.
+		The tests will be performed using scripts written in Python [\ref{appendix:python}]. The scripts either act as controller or as disciple. The controller is responsible for controlling the tests, by synchronizing the time, exchanging commands to run, modify or stop the tests and gathering data. The disciple is the listener and executes all task commands the controller sends. The commands include getting the hostname of a disciple, setting the TCP congestion algorithm of a disciple, configuring the time of a disciple, starting the data transfer and measurement tools on the disciple and closing the connection with the controller.
 
 		\subsubsection{Testing hardware}
 		The specifications of the hardware used for the tests are shown in table \ref{table:spec1}, table \ref{table:spec2} and table \ref{table:spec3}. The switch shown in table \ref{table:spec3} has all router related functionalities, which might impact the network speed, turned off.
@@ -213,6 +212,7 @@ Type some text here.
 	The most common TCP congestion algorithms are CTCP, CUBIC and BIC. CTCP is the default congestion algorithm in Microsoft Windows Server 2008 and newer \cite{cubic-kernel-version}. CUBIC is the default congestion algorithm in Linux distributions with kernel versions 2.6.19 and higher \cite{cubic-kernel-version}. BIC was the default congestion algorithm in earlier Linux distributions from kernel version 2.6.8 until 2.6.19 \cite{bic-kernel-version} \cite{cubic-kernel-version}. DCTCP and BBR will also be tested as those protocols are newer. DCTCP is specifically designed for datacenters \cite{dctcp-congestion} and BBR is a new congestion protocol not yet widely deployed \cite{bbr-congestion}.
 	
 		\subsubsection{Algorithm Characteristics}
+		
 		- Includes characteristics of the algorithms. To what do the TCP congestion algorithms respond according to literature? And how do they deal with that (If available in literature).
 		
 		\subsubsection{Performance comparison}	
