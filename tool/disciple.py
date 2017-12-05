@@ -3,6 +3,12 @@
 import sys, os, socket, datetime, time
 from shared import *
 
+if len(sys.argv) == 1 or '-h' in sys.argv or '--help' in sys.argv:
+    print('Usage: python3 disciple.py <port>')
+    exit(1)
+
+port = int(sys.argv[1])
+
 if os.name == 'posix':
     os.system('''
     ip l | grep ifb0 > /dev/null;
@@ -23,7 +29,7 @@ controlleraddr = None
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-sock.bind(('0.0.0.0', TCPPORT))
+sock.bind(('0.0.0.0', port))
 sock.listen(1)
 
 print('Ready to receive commands.')

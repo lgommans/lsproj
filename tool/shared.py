@@ -1,6 +1,5 @@
 # Settings
 MAXMSGLEN = 100  # bytes
-TCPPORT = 1
 MTU = 1400  # bytes
 MAXTESTDURATION = 1000  # seconds
 CONNTESTGAP = 3  # seconds

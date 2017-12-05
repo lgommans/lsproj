@@ -11,7 +11,13 @@ hosts = {
     'server2': '10.0.0.1',
     'winserv': '10.0.0.3',
     'client1': '10.0.0.2',
-    'client2': '10.0.0.4',
+    'client2': '10.0.0.2',
+}
+
+# Only non-standard ports need to be mentioned in the ports table.
+defaultport = 1
+ports = {
+    'client2': 2,
 }
 # End of settings
 
@@ -30,7 +36,7 @@ for host in hosts:
     sock.settimeout(3)
     if not kill:
         print('Connecting to ' + hosts[host])
-    sock.connect((hosts[host], TCPPORT))
+    sock.connect((hosts[host], defaultport if host not in ports else ports[host]))
 
     if kill:
         print('Killing ' + hosts[host])
@@ -69,7 +75,7 @@ for algo1 in algos:
         for delay in delays:
             for loss in losses:
                 print('Running algo1={} algo2={} delay={} loss={}'.format(algo1, algo2, delay, loss))
-                results.update(runtest(hosts, hostnames, test_duration, delay, loss, algo1, algo2))
+                results.update(runtest(hosts, hostnames, defaultport, ports, test_duration, delay, loss, algo1, algo2))
                 print('')
 
 for result in results:
