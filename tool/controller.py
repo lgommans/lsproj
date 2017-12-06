@@ -97,18 +97,28 @@ else:
     savefile = ''
 
 savefileout = open('savefile', 'a')
+resultfileout = open('results', 'a')
+resultfileout.write('\n')
 
+num_total_tests = 750
+count = 0
 try:
     for algo1 in algos:
         for algo2 in algos:
+            if algo1 == 'ctcp' or algo2 == 'ctcp':
+                continue # skip for now
+
             for delay in delays:
                 for loss in losses:
+                    count += 1
+
                     config = 'algo1={} algo2={} delay={} loss={}'.format(algo1, algo2, delay, loss)
-                    if config in savefile:
+                    config_alt = 'algo2={} algo1={} delay={} loss={}'.format(algo1, algo2, delay, loss)  # Swap algo1 and 2
+                    if config in savefile or config_alt in savefile:
                         print('Skipping ' + config + ': already in savefile')
                         continue
 
-                    print('Running ' + config)
+                    print('Running ' + config + ' ({}/{}, {} minutes remaining)'.format(count, num_total_tests, (num_total_tests - count) * 2 * 27 / 60))
                     results.update(runtest(hosts, hostnames, defaultport, ports, test_duration, delay, loss, algo1, algo2))
                     savefileout.write(config + '\n')
                     print('')
@@ -117,7 +127,11 @@ except: # Catch keyboardinterrupt -- or error but in all cases, the exception wi
     for result in results:
         print(result + ": " + str(results[result]))
 
+    for result in results:
+        resultfileout.write(result + ": " + str(results[result]) + '\n')
+
     sys.stdout.flush()  # flush stdout so it doesn't mix with stderr that will get printed
+    resultfileout.close()
 
     raise
 

@@ -87,10 +87,11 @@ while True:
             when = float(read(controller))
 
             if when < time.time():
-                print('Requested time in the past. That isn\'t gonna fly.')
+                print('Requested time in the past ({}s). That isn\'t gonna fly.'.format(time.time() - when))
                 exit(4)
 
             ds = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            ds.settimeout(20 + CONNTESTGAP)
             ds.connect((dst, dataport))
             print('Connected to data sink, waiting until ' + str(when))
 
@@ -117,7 +118,7 @@ while True:
             for i in range(t, t+MAXTESTDURATION):
                 bytecounts[i] = 0
 
-            ds.settimeout(CONNTESTGAP * 3)
+            ds.settimeout(20 + CONNTESTGAP)
             client, addr = ds.accept()
             print('Client {} connected at {}.'.format(addr, time.time()))
             while True:
