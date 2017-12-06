@@ -2,7 +2,7 @@
 
 # Settings
 algos = ['cubic', 'ctcp', 'dctcp', 'bic', 'bbr']
-delays = [8, 64, 120, 176, 232, 290]
+delays = [8, 80, 150, 220, 290]
 losses = [0, 0.01, 0.1, 0.6, 1.2]
 test_duration = 20
 
@@ -21,7 +21,7 @@ ports = {
 }
 # End of settings
 
-import socket, time, sys, os
+import socket, time, sys, os, random
 from shared import *
 from controllerlib import *
 
@@ -91,26 +91,29 @@ if kill:
 print('')
 
 results = {}
-if os.path.isfile('savefile'):
-    savefile = open('savefile').read()
+if os.path.isfile('savefile2'):
+    savefile = open('savefile2').read()
 else:
     savefile = ''
 
-savefileout = open('savefile', 'a')
-resultfileout = open('results', 'a')
+savefileout = open('savefile2', 'a')
+resultfileout = open('results2', 'a')
 resultfileout.write('\n')
 
-num_total_tests = 750
+num_total_tests = 0
 count = 0
+todotests = []
 try:
     for algo1 in algos:
         for algo2 in algos:
-            if algo1 == 'ctcp' or algo2 == 'ctcp':
-                continue # skip for now
-
             for delay in delays:
                 for loss in losses:
-                    count += 1
+                    num_total_tests += 1
+                    if algo1 == algo2:
+                        continue
+
+                    if algo1 == 'ctcp' or algo2 == 'ctcp':
+                        continue # skip for now
 
                     config = 'algo1={} algo2={} delay={} loss={}'.format(algo1, algo2, delay, loss)
                     config_alt = 'algo2={} algo1={} delay={} loss={}'.format(algo1, algo2, delay, loss)  # Swap algo1 and 2
@@ -118,10 +121,17 @@ try:
                         print('Skipping ' + config + ': already in savefile')
                         continue
 
-                    print('Running ' + config + ' ({}/{}, {} minutes remaining)'.format(count, num_total_tests, (num_total_tests - count) * 2 * 27 / 60))
-                    results.update(runtest(hosts, hostnames, defaultport, ports, test_duration, delay, loss, algo1, algo2))
-                    savefileout.write(config + '\n')
-                    print('')
+                    todotests.append([algo1, algo2, delay, loss])
+
+    print('Starting {} tests ({} skipped or already done)'.format(len(todotests), num_total_tests))
+    random.shuffle(todotests)
+    for algo1, algo2, delay, loss in todotests:
+        print('Running ' + config + ' ({}/{}, {} minutes remaining)'.format(count, len(todotests), round((len(todotests) - count) * 2 * test_duration * CONNTESTGAP / 60)))
+        results.update(runtest(hosts, hostnames, defaultport, ports, test_duration, delay, loss, algo1, algo2))
+        savefileout.write(config + '\n')
+        print('')
+        count += 1
+
     raise ':)'
 except: # Catch keyboardinterrupt -- or error but in all cases, the exception will be printed after the results.
     for result in results:

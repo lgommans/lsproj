@@ -2,7 +2,7 @@
 MAXMSGLEN = 100  # bytes
 MTU = 1400  # bytes
 MAXTESTDURATION = 1000  # seconds
-CONNTESTGAP = 3  # seconds
+CONNTESTGAP = 2  # seconds
 VERSION = 4
 # End of settings
 

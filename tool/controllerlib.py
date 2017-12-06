@@ -3,6 +3,7 @@ import time
 import socket
 
 dataport = int(40e3)
+testnum = int(open('testnum').read())
 
 def conn_test(host_from, host_to, duration, delay, loss, algo, at, port):
     global dataport
@@ -48,7 +49,8 @@ def get_results(host, port):
 
 
 def runtest(hosts, hostnames, defaultport, ports, test_duration, delay, loss, algo1, algo2):
-    tag = 'delay={} loss={} duration={} '.format(delay, loss, test_duration)
+    global testnum
+    tag = 'delay={} loss={} duration={} testnum={} '.format(delay, loss, test_duration, testnum)
 
     if algo1 == 'ctcp':
         s1 = hosts['winserv']
@@ -77,8 +79,14 @@ def runtest(hosts, hostnames, defaultport, ports, test_duration, delay, loss, al
     conn_test(s2, hosts['client1'], duration=test_duration, loss=loss, delay=delay, algo=algo2, at=at, port=defaultport if 'client1' not in ports else ports['client1'])
     time.sleep(test_duration + CONNTESTGAP * 2)
 
+    tag = 'delay={} loss={} duration={} testnum={}r '.format(delay, loss, test_duration, testnum)
     results[tag + 'algo={} run=2 s={} c=2'.format(algo1, s1)] = get_results(hosts['client2'], port=defaultport if 'client2' not in ports else ports['client2'])
     results[tag + 'algo={} run=2 s={} c=1'.format(algo2, s2)] = get_results(hosts['client1'], port=defaultport if 'client1' not in ports else ports['client1'])
+
+    testnum += 1
+    f = open('testnum', 'w')
+    f.write(str(testnum))
+    f.close()
 
     return results
 
