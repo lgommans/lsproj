@@ -1,5 +1,5 @@
 # Settings
-MAXMSGLEN = 100  # bytes
+MAXMSGLEN = 450  # bytes
 MTU = 1400  # bytes
 MAXTESTDURATION = 1000  # seconds
 CONNTESTGAP = 2  # seconds

@@ -91,12 +91,17 @@ if kill:
 print('')
 
 results = {}
-if os.path.isfile('savefile2'):
-    savefile = open('savefile2').read()
+if os.path.isfile('savefile3'):
+    savefile = open('savefile3').read()
 else:
     savefile = ''
 
-savefileout = open('savefile2', 'a')
+if os.path.isfile('results2'):
+    resultsfile = open('results2').read()
+else:
+    resultsfile = ''
+
+savefileout = open('savefile3', 'a')
 resultfileout = open('results2', 'a')
 resultfileout.write('\n')
 
@@ -112,8 +117,8 @@ try:
                     if algo1 == algo2:
                         continue
 
-                    if algo1 == 'ctcp' or algo2 == 'ctcp':
-                        continue # skip for now
+                    #if algo1 == 'ctcp' or algo2 == 'ctcp':
+                        #continue # don't skip for now
 
                     config = 'algo1={} algo2={} delay={} loss={}'.format(algo1, algo2, delay, loss)
                     config_alt = 'algo2={} algo1={} delay={} loss={}'.format(algo1, algo2, delay, loss)  # Swap algo1 and 2
@@ -121,11 +126,15 @@ try:
                         print('Skipping ' + config + ': already in savefile')
                         continue
 
+                    #if checkIfDone(algo1, algo2, delay, loss, resultsfile, config):
+                     #   continue
+
                     todotests.append([algo1, algo2, delay, loss])
 
     print('Starting {} tests ({} skipped or already done)'.format(len(todotests), num_total_tests))
     random.shuffle(todotests)
     for algo1, algo2, delay, loss in todotests:
+        config = 'algo1={} algo2={} delay={} loss={}'.format(algo1, algo2, delay, loss)
         print('Running ' + config + ' ({}/{}, {} minutes remaining)'.format(count, len(todotests), round((len(todotests) - count) * 2 * test_duration * CONNTESTGAP / 60)))
         results.update(runtest(hosts, hostnames, defaultport, ports, test_duration, delay, loss, algo1, algo2))
         savefileout.write(config + '\n')

@@ -90,3 +90,29 @@ def runtest(hosts, hostnames, defaultport, ports, test_duration, delay, loss, al
 
     return results
 
+def checkIfDone(algo1, algo2, delay, loss, resultsfile, config):
+    results = []
+    for line in resultsfile.split('\n'):
+        if 'delay={}'.format(delay) in line and 'loss={}'.format(loss) in line and ('algo={}' + algo1 in line or 'algo=' + algo1 in line or 'algo=' + algo2 in line or 'algo=' + algo2 in line):
+            results.append(line)
+
+    for result1 in results:
+        testnum1 = result1[result1.index('testnum')+8:]
+        testnum1 = testnum1[:testnum1.index(' ')]
+        num1isReverse = 'r' in testnum1
+        testnum1 = testnum1.replace('r', '')
+        for result2 in results:
+            if ('algo=' + algo1 in result1 and 'algo=' + algo2 in result2) or ('algo=' + algo2 in result1 and 'algo=' + algo1 in result2):
+                testnum2 = result2[result2.index('testnum')+8:]
+                testnum2 = testnum2[:testnum2.index(' ')]
+                if 'r' in testnum2 and num1isReverse:
+                    continue
+
+                testnum2 = testnum2.replace('r', '')
+                if testnum2 == testnum1:
+                    print('Found {} and {} belong together, and they match {}'.format(result1[:result1.index(':')], result2[:result2.index(':')], config))
+                    return True
+
+    return False
+
+    
