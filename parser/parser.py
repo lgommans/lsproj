@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-results = open("longresults", "r")
+results = open("newres", "r")
 
 algorithms = ['cubic', 'ctcp', 'dctcp', 'bic', 'bbr']
 delays = [8, 80, 150, 220, 290]
@@ -18,19 +18,28 @@ def plot_graph(dataset, base_algo, sub_algo, loss, delay):
     for result in dataset:
         if dataset[result][0]["run"] == "1" or dataset[result][0]["run"] == "2": #Always combined same run in dict
             #Yes, the if statement below is pretty useless. As of now. Not sure if this will have a purpose. 
-            if dataset[result][0]["c"] == "1":
-                t = 0
-                u = 1
-            elif dataset[result][0]["c"] == "2":
-                t = 0 
-                u = 1
+            if "r" in result:
+                if dataset[result][0]["c"] == "1":
+                    client1 = 1
+                    client2 = 0
+                elif dataset[result][0]["c"] == "2":
+                    client1 = 0
+                    client2 = 1
+            else:
+                if dataset[result][0]["c"] == "1":
+                    client1 = 0
+                    client2 = 1
+                elif dataset[result][0]["c"] == "2":
+                    client1 = 1
+                    client2 = 0
+
             if len(dataset[result]) < 2:
                 print("Not complete error for algorithm: " + base_algo + " in combination with " + sub_algo) 
                 return False
-            if dataset[result][t]["algo"] == base_algo and dataset[result][u]["algo"] == sub_algo:
-                if dataset[result][t]["loss"] == loss and dataset[result][t]["delay"] == delay: #The other one will always have the same delay and loss
-                    base_plot[dataset[result][t]["run"]] = [int(x) for x in dataset[result][t]["bandwidth"].split(" ")]
-                    sub_plot[dataset[result][u]["run"]] = [int(x) for x in dataset[result][u]["bandwidth"].split(" ")]
+            if dataset[result][client1]["algo"] == base_algo and dataset[result][client2]["algo"] == sub_algo:
+                if dataset[result][client1]["loss"] == loss and dataset[result][client1]["delay"] == delay: #The other one will always have the same delay and loss
+                    base_plot[dataset[result][client1]["run"]] = [int(x) for x in dataset[result][client1]["bandwidth"].split(" ")]
+                    sub_plot[dataset[result][client2]["run"]] = [int(x) for x in dataset[result][client2]["bandwidth"].split(" ")]
     
     if "1" not in base_plot:
         return False
@@ -41,7 +50,7 @@ def plot_graph(dataset, base_algo, sub_algo, loss, delay):
     sub_y = np.array(sub_plot["1"])
     base_algor, = plt.plot(base_y, label=base_algo, color="red")
     sub_algor, = plt.plot(sub_y, label=sub_algo, color="darkgreen")
-    plot_height = max(max(base_plot["1"]), max(sub_plot["1"])) + 1000
+    plot_height = max(max(base_plot["1"]), max(sub_plot["1"])) + 7000
     if len(base_plot) > 1 and len(sub_plot) > 1:
         base_y_2 = np.array(base_plot["2"])
         sub_y_2 = np.array(sub_plot["2"])
@@ -83,6 +92,14 @@ print("length result_data: " + str(len(result_data)))
 # Plot graph for base_algorithm and sub_algorithm
 for delay in delays:
     for loss in losses:
-        plot_graph(result_data, "cubic", "bbr" , str(loss), str(delay))
+        for algo1 in algorithms:
+            for algo2 in algorithms:
+                if algo1 == algo2:
+                    continue
+
+                try:
+                    plot_graph(result_data, algo1, algo2, str(loss), str(delay))
+                except:
+                    pass
 
 
