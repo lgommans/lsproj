@@ -19,22 +19,33 @@
 
 \section{Abstract}
 
+TCP congestion control algorithms aim to divide the available bandwidth fairly
+among network users. In datacenters, many tenants share a limited amount of bandwidth.
+If too many tenants TODO luc
+
 
 \section{Introduction}
 
-% Copied from proposal
-% Edited 27-11-2017
-
 Multitentant datacenters aim to provide services with consistent performance
 and reliability. When customers send a lot of data in a short amount of time,
-networks might become congested, which results in lowered performance.
+networks might become saturated or even congested, and bandwidth needs to be
+distributed fairly among tenants.
 
 Congestion occurs when a buffer on the path to the recipient is full and
-packets are dropped. TCP has a mechanism to avoid congestion in the network:
-TCP congestion control. Multiple algorithms are available for congestion
-control and show a different behaviour depending on the network's
-characteristics.
+packets have to be dropped. TCP uses a congestion control algorithm to avoid
+congestion in the network and distribute bandwidth fairly among users. Several
+algorithms are available to perform this function. Each has a different behaviour
+depending on the network's characteristics.
 
+This report includes a performance and behavior analysis of different TCP congestion control algorithms in a (simulated) multitenant datacenter network. Based on the results, we will recommend datacenters on measures to take to keep providing a reliable environment for customers when multiple congestion control algoritms are active in the network, for example using Quality of Service or discouraging certain congestion control algorithms. The main research question is: {\it How can a datacenter provide a reliable and performant environment for customers when multiple TCP congestion control algorithms are used in the
+network?}
+
+
+\section{Related work}
+
+% Copied from proposal
+
+% todo make this logical
 In 2010, the algorithm DCTCP was described in an
 article\cite{dctcp-congestion-original} and published as RFC8257 in
 2017\cite{dctcp-congestion}. DCTCP is optimized for datacenters and provides a
@@ -46,13 +57,6 @@ TCP congestion methods\cite{bbr-congestion}. A comparison of BBR with
 CUBIC\cite{bbr-congestion-comparison} shows that the BBR node pushes the CUBIC
 node away in bandwidth when using small buffers. The BBR node gets more
 bandwidth allocated than the CUBIC node.
-
-This report includes a performance and behavior analysis of different TCP congestion control algorithms in a (simulated) multitenant datacenter network. Based on the results, we will recommend datacenters on measures to take to keep providing a reliable environment for customers when multiple congestion control algoritms are active in the network, for example using Quality of Service or discouraging certain congestion control algorithms. The main research question is: {\it How can a datacenter provide a reliable and performant environment for customers when multiple TCP congestion control algorithms are used in the
-network?}
-
-\section{Related work}
-
-% Copied from proposal
 
 The TCP congestion control algorithm BBR is discussed in \cite{bbr-congestion}.
 The journal contains a performance test of the BBR algorithm and a comparison
@@ -212,7 +216,7 @@ Type some text here.
 	The most common TCP congestion algorithms are CTCP, CUBIC and BIC. CTCP is the default congestion algorithm in Microsoft Windows Server 2008 and newer \cite{cubic-kernel-version}. CUBIC is the default congestion algorithm in Linux distributions with kernel versions 2.6.19 and higher \cite{cubic-kernel-version}. BIC was the default congestion algorithm in earlier Linux distributions from kernel version 2.6.8 until 2.6.19 \cite{bic-kernel-version} \cite{cubic-kernel-version}. DCTCP and BBR will also be tested as those protocols are newer. DCTCP is specifically designed for datacenters \cite{dctcp-congestion} and BBR is a new congestion protocol not yet widely deployed \cite{bbr-congestion}.
 	
 		\subsubsection{Algorithm Characteristics}
-		
+		The BBR algorithm depends on the parameters BBR.BtlBw and BBR.RTprop. Those parameters are estimates defined by the BBR algorithm. \\texttt{BtlBw} contains the bandwidth available to data transmissions ...
 		- Includes characteristics of the algorithms. To what do the TCP congestion algorithms respond according to literature? And how do they deal with that (If available in literature).
 		
 		\subsubsection{Performance comparison}	
