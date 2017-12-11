@@ -227,8 +227,15 @@ Type some text here.
 			\item Controller at the sender. The sender has an estimate of the fraction of packets that are marked with CE. This is based on the actual fraction of packets that were marked, the weight given to the new estimate compared to the past weight. This results in $\alpha$. $\alpha$ is used to indicate the congestion on a network with a maximum of value 1, indicating a congested network, and a minimum value of 0, indicating no congestion in the network. DCTCP cuts the window size using $\alpha$: $cwnd = cwnd * (1 - \alpha/2)$. This results in a low queue length, but ensuring high throughput.\\
 		\end{enumerate}
 		
-		
-		- Includes characteristics of the algorithms. To what do the TCP congestion algorithms respond according to literature? And how do they deal with that (If available in literature).
+		The BIC algorithm controls its windows based on the size of windows \cite{bic-tcp-congestion}. It consists of two components:
+		\begin{enumerate}
+			\item Binary search increase. This algorithm computes the midpoint between the maximum window size $W_{max}$ and current minimum window size $W_{min}$. If packet loss occurs, $W_{max}$ is set to the midpoint. This process repeats until $W_{max}$ and $W_{min}$ are smaller than the minimum increment $S_{min}$.
+			\item Additive increase runs as an addition to the binary search increase. If $W_{max} - midpoint > S_{max}$, the window size is increased by $S_{max}$ until $W_{max} - midpoint < S_{max}$. $S_{max}$ is the preset maximum increment. 
+		\end{enumerate}
+In case the current window size becomes greater than $W_{max}$ a slow start strategy is performed to determine a new $W_{max}$: $W_{max} + \alpha * S_{min}$, where $\alpha$ is a multiplier. The multiplier is increased by one until $S_{min} * \alpha >= S_{max}$ or when losses occur. In the case of loss a new value for $W_{max}$ will be set.
+
+		The CUBIC algorithm
+
 		
 		\subsubsection{Performance comparison}	
 		- Includes results of tests.
