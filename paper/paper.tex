@@ -19,9 +19,22 @@
 
 \section{Abstract}
 
-TCP congestion control algorithms aim to divide the available bandwidth fairly
-among network users. In datacenters, many tenants share a limited amount of bandwidth.
-If too many tenants TODO luc
+In datacenters, multiple tenants share a finite amount of bandwidth. When an
+uplink is saturated, packets that overflow available buffer space will be
+dropped and have to be retransmitted by the sender. When one tenant chooses to
+retransmit faster than others, they have an advantage as they will make it
+though more quickly. TCP is a connection-oriented protocol which employs
+congestion control algorithms which aim to divide the available bandwidth
+equally among network users.
+
+Some congestion control algorithms are more aggressive than others, and it has
+been reported that some algorithms cause others to back off excessively.
+Tenants may, perhaps inadvertedly, cause unfair bandwidth distributions during
+times of congestion.
+
+In this research, we compare five popular algorithms under different network
+conditions to see how they influence each other. Among those are the newly
+developed BBR and DCTCP. We found TODO
 
 
 \section{Introduction}
