@@ -234,7 +234,7 @@ Type some text here.
 		\end{enumerate}
 In case the current window size becomes greater than $W_{max}$ a slow start strategy is performed to determine a new $W_{max}$: $W_{max} + \alpha * S_{min}$, where $\alpha$ is a multiplier. The multiplier is increased by one until $S_{min} * \alpha >= S_{max}$ or when losses occur. In the case of loss a new value for $W_{max}$ will be set.
 
-		The CUBIC algorithm
+		The CUBIC algorithm is a successor of the BIC algorithm \cite{cubic-tcp-congestion}. In case of a loss event $W_{max}$, which is the maximum window size, is registered. This is followed by a multiplicative decrease of the congestion window by factor $\beta$. If an ACK in congestion avoidance is received and the current window size $cwnd$ is less than $W_{max}$, the algorithm uses the concave profile to increase the window size according to the formula: $cwnd = \frac{W(t+RTT)-cwnd}{cwnd}$. If $cwnd$ is larger than $W_{max}$, the convex profile is used to increase the window size according to the same formula as the concave profile. In both formulas $t$ is the time elapsed from the last window reducation.
 
 		
 		\subsubsection{Performance comparison}	
