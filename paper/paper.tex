@@ -76,7 +76,7 @@ a small buffer occupancy and has an early detection of congestion.
 During this research a performance test of various TCP congestion algorithms will be performed. The most common TCP congestion algorithms will be determined through desk research. The tests will be conducted in a private environment. Based on the results of those tests, recommendations will be given related to the measures a datacenter has to take to keep the traffic equally allocated over customers. 
 
 	\subsection{Selecting TCP congestion algorithms}	
-	In order to select the most common TCP congestion algorithms desk research will be performed. Results of scientific reports will show which algorithms are used more often than other algoritms. Based on those results a list of TCP congestion algorithms will be composed.	
+	In order to select the most common TCP congestion algorithms desk research will be performed. This desk research will show which algorithms are used more often than other algoritms by looking for the default algorithms in Operating Systems. Based on those results a list of TCP congestion algorithms will be composed.	
 	
 	\subsection{Comparing Performance}
 	One scenario will be used to compare the performance of the TCP congestion algorithms:
@@ -216,7 +216,10 @@ Type some text here.
 	The most common TCP congestion algorithms are CTCP, CUBIC and BIC. CTCP is the default congestion algorithm in Microsoft Windows Server 2008 and newer \cite{cubic-kernel-version}. CUBIC is the default congestion algorithm in Linux distributions with kernel versions 2.6.19 and higher \cite{cubic-kernel-version}. BIC was the default congestion algorithm in earlier Linux distributions from kernel version 2.6.8 until 2.6.19 \cite{bic-kernel-version} \cite{cubic-kernel-version}. DCTCP and BBR will also be tested as those protocols are newer. DCTCP is specifically designed for datacenters \cite{dctcp-congestion} and BBR is a new congestion protocol not yet widely deployed \cite{bbr-congestion}.
 	
 		\subsubsection{Algorithm Characteristics}
-		The BBR algorithm depends on the parameters BBR.BtlBw and BBR.RTprop. Those parameters are estimates defined by the BBR algorithm. \\texttt{BtlBw} contains the bandwidth available to data transmissions ...
+		The BBR algorithm depends on the parameters BBR.BtlBw and BBR.RTprop. Those parameters are estimates defined by the BBR algorithm. \texttt{BtlBw} contains the bandwidth available to data transmissions ...
+\\
+\\		
+		
 		- Includes characteristics of the algorithms. To what do the TCP congestion algorithms respond according to literature? And how do they deal with that (If available in literature).
 		
 		\subsubsection{Performance comparison}	
