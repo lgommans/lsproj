@@ -101,10 +101,10 @@ In order to select the most common TCP congestion algorithms desk research will 
 One scenario will be used to compare the performance of the TCP congestion algorithms:
 
 \begin{enumerate}
-	\item The user owns multiple endpoints in the network. In this case a congestion algorithm is applied at both the client and server side. This scenario applies to multitentant datacenter situations, where a user owns a server in the datacenter network and a node outside of the datacenter network. In this test the user node and random node(s) are at the receiving side and the user server and random server at the sending side. The tests will be performed from a multitenant datacenter perspective.
+	\item The user owns multiple endpoints in the network. In this case a congestion algorithm is applied at both the client and server side. This scenario applies to multitentant datacenter situations, where a user owns a server in the datacenter network and a node outside of the datacenter network. In this test the clients are at the receiving side and the user server and random server at the sending side. The tests will be performed from a multitenant datacenter perspective.
 \end{enumerate}
 
-The created testing environment is shown in figure \ref{fig:setup1}. This is a virtual representation of the network as the client node and random node are running on one physical device. The client node and random node are listening each on a different port, which is set by the controller described in section [ENTER SECTION]. The servers are separate physical devices as one of the servers possible runs Windows when a TCP congestion control algorithm is only available for Windows. The software used for the servers and clients is Ubuntu 17.04. If Windows is used, the server will be running Windows 10.
+The created testing environment is shown in figure \ref{fig:setup1}. The clients are located on one physical device and are listening each on a different port, which is set by the controller described in section [TO DO: ENTER SECTION]. The servers are separate physical devices as one of the servers possible runs Windows when a TCP congestion control algorithm is only available for Windows. The software used for the servers and clients is Ubuntu 17.04. If Windows is used, the server will be running Windows 10.
 
 \begin{figure}[H]
 	\centering
@@ -113,7 +113,7 @@ The created testing environment is shown in figure \ref{fig:setup1}. This is a v
 	\label{fig:setup1}
 \end{figure}
 
-In scenario 1 the user server uses the same algorithm as the user node and the random server uses the same algorithm as the random node. Tests in this scenario cover behavioral differences between TCP congestion algorithms when a user owns a node in the network of a multitenant datacenter.
+In scenario 1 the user server uses the same algorithm as the first client and the random server uses the same algorithm as the second client. Tests in this scenario cover behavioral differences between TCP congestion algorithms when a user owns a node in the network of a multitenant datacenter.
 
 In scenario 1 the TCP congestion algorithm is tested for fairness in sharing bandwidth with other TCP connections using other TCP congestion algorithms. In order to test the fairness of congestion algorithms, the bandwidth allocation per second per algorithm is measured. It can be determined whether a specific TCP congestion algorithm in combination with other TCP congestion algorithms results in the allocation of more or less bandwidth to that specific TCP connection.
 
@@ -208,7 +208,7 @@ The specifications of the hardware used for the tests are shown in table \ref{ta
 
 \begin{table}[H]
 	\centering
-	\caption{Switch 1 configuration}
+	\caption{Switch configuration}
 	\begin{tabular}[H]{ | l | l | }
 	\hline
 	\textbf{Hardware} & \textbf{Specification} \\
@@ -219,20 +219,6 @@ The specifications of the hardware used for the tests are shown in table \ref{ta
 	\label{table:spec2}
 \end{table}
 
-\begin{table}[H]
-	\centering
-	\caption{Switch 2 configuration}
-	\begin{tabular}[H]{ | l | l | }
-	\hline
-	\textbf{Hardware} & \textbf{Specification} \\
-	\hline  Model & Sitecom Gigabit Router 300N-XR\\
-	\hline  Ports & 4x Gigabit Ethernet\\
-	\hline
-	\end{tabular}
-	\label{table:spec3}
-\end{table}
-
-
 \subsection{Traffic Management}
 
 Desk research will be conducted to gather information related to traffic management. The goal is to find a mechanism that is capable of allocating bandwidth equally between customers of a datacenter. This is done by analyzing the results from the algorithm comparison and the initial desk research on traffic management.
@@ -240,7 +226,7 @@ Desk research will be conducted to gather information related to traffic managem
 
 \section{Results}
 
-Type some text here.
+TO DO: Type some text here.
 
 
 \subsection{TCP Congestion Algorithms}
