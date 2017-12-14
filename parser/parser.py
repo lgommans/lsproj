@@ -196,7 +196,6 @@ for delay in delays:
     for loss in losses:
         create_html_delay_loss(delay, loss)
 
-exit(0)
 # Plot graph for base_algorithm and sub_algorithm
 done = {}
 for delay in delays:
