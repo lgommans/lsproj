@@ -53,6 +53,8 @@ depending on the network's characteristics.
 This report includes a performance and behavior analysis of different TCP congestion control algorithms in a (simulated) multitenant datacenter network. Based on the results, we will recommend datacenters on measures to take to keep providing a reliable environment for customers when multiple congestion control algoritms are active in the network, for example using Quality of Service or discouraging certain congestion control algorithms. The main research question is: {\it How can a datacenter provide a reliable and performant environment for customers when multiple TCP congestion control algorithms are used in the
 network?}
 
+TODO in the next section blah, then blah, and finally blah.
+
 
 \section{Related work}
 
@@ -88,7 +90,7 @@ a small buffer occupancy and has an early detection of congestion.
 
 \section{Method}
 
-During this research a performance test of various TCP congestion algorithms will be performed. The most common TCP congestion algorithms will be determined through desk research. The tests will be conducted in a private environment. Based on the results of those tests, recommendations will be given related to the measures a datacenter has to take to keep the traffic equally allocated over customers.
+During this research, performance comparison tests of various TCP congestion algorithms will be performed. The most common TCP congestion algorithms will be determined through desk research. The tests will be conducted in an isolated environment. Based on the results of those tests, recommendations will be given related to the measures a datacenter has to take to keep the traffic equally allocated over customers.
 
 
 \subsection{Selecting TCP congestion algorithms}
@@ -249,7 +251,7 @@ Desk research will be conducted to gather information related to traffic managem
 
 \section{Results}
 
-TODO: Type some text here.
+In this section we will first elaborate on which algorithms we looked into, next we look at their internal workings, and finally we show the results of our experiments.
 
 
 \subsection{TCP Congestion Algorithms}
@@ -308,16 +310,17 @@ See figures \ref{fig:fair-1} and \ref{fig:fair-2}.
 \end{figure}
 
 CTCP is the only algorithm that responds excessively to others. Alone, it
-reaches the full gigabit speed; but once any other algorithm runs at the same
+reaches the full gigabit speed; but if any other algorithm runs at the same
 time (i.e. a normal test is performed), CTCP's speed consistently drops. It
 then reaches around 55 megabits ($\pm$5), while the other algorithms reach at %TODO: check 55+-5
 least 800 with good network conditions (8 milliseconds latency, 0\% loss).
+See figure \ref{fig:ctcp-1} for an example of BIC vs. CTCP.
 
 \begin{figure}[H]
 	\centering
 		\includegraphics[scale=0.4]{figs/ctcp-bic-8-0.png}
-		\caption{TODO}
-	\label{fig:packet-loss-chart}
+		\caption{CTCP vs. BIC with 8ms latency and 0\% loss}
+	\label{fig:ctcp-1}
 \end{figure}
 
 Additionally, CTCP also lowers its speed in response to the simulated network
@@ -331,6 +334,8 @@ reaches 850$\pm$20 megabits per second. Other algorithms will reach much lower
 speeds (24 megabits is not uncommon), but we see no signs of BBR being the
 cause of that. In tests with BBR nor CTCP, speeds are not higher than when BBR
 is one of the algorithms being tested.
+
+The full set of results is available online\cite{git-lsproj}.
 
 
 \subsection{Traffic Management}
