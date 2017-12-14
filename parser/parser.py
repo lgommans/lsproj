@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+
+# Dependency: python-matplotlib
+
 import matplotlib.pyplot as plt
 from matplotlib.font_manager import FontProperties
 import numpy as np
@@ -37,39 +41,49 @@ def plot_graph(dataset, base_algo, sub_algo, loss, delay):
             if len(dataset[result]) < 2:
                 print("Not complete error for algorithm: " + base_algo + " in combination with " + sub_algo) 
                 return False
+
             if dataset[result][client1]["algo"] == base_algo and dataset[result][client2]["algo"] == sub_algo:
                 if dataset[result][client1]["loss"] == loss and dataset[result][client1]["delay"] == delay: #The other one will always have the same delay and loss
-                    base_plot[dataset[result][client1]["run"]] = [int(x) for x in dataset[result][client1]["bandwidth"].split(" ")]
-                    sub_plot[dataset[result][client2]["run"]] = [int(x) for x in dataset[result][client2]["bandwidth"].split(" ")]
+                    if dataset[result][client1]["bandwidth"].strip() == '' or dataset[result][client2]["bandwidth"].strip() == '':
+                        print('Warn: set without bandwidth, testnum={}'.format(dataset[result][client1]["testnum"]))
+                        continue
+
+                    #base_plot[dataset[result][client1]["run"]] = [int(x) for x in dataset[result][client1]["bandwidth"].strip().split(" ")]
+                    #sub_plot[dataset[result][client2]["run"]] = [int(x) for x in dataset[result][client2]["bandwidth"].strip().split(" ")]
+                    base_plot[dataset[result][client1]["run"]] = [float(x)/(2**20) for x in dataset[result][client1]["bandwidth"].strip().split(" ")]
+                    sub_plot[dataset[result][client2]["run"]] = [float(x)/(2**20) for x in dataset[result][client2]["bandwidth"].strip().split(" ")]
     
     if "1" not in base_plot:
         return False
+
+    filename = base_algo + "/" + base_algo + "_vs_" + sub_algo + "_" + delay + "_" + loss + ".png"
+    print(filename)
+
     #print("Bandwidth points " + base_algo +  " per 1 second: " + str(base_plot))
     #print("Bandwidth points " + sub_algo + " per 1 second: " + str(sub_plot)) 
     base_y = np.array(base_plot["1"])
     sub_y = np.array(sub_plot["1"])
-    base_algor, = plt.plot(base_y, label=base_algo, color="red")
-    sub_algor, = plt.plot(sub_y, label=sub_algo, color="darkgreen")
-    plot_height = max(max(base_plot["1"]), max(sub_plot["1"])) + 7000
+    base_algor, = plt.plot(base_y, label=base_algo + ' run 1', color="red")
+    sub_algor, = plt.plot(sub_y, label=sub_algo + ' run 1', color="darkgreen")
+    plot_height = max(max(base_plot["1"]), max(sub_plot["1"])) * 1.1
     if len(base_plot) > 1 and len(sub_plot) > 1:
         base_y_2 = np.array(base_plot["2"])
         sub_y_2 = np.array(sub_plot["2"])
         if len(base_plot) > 2:
-            print("YES")
+            print(">2 subplots for {}".format(filename))
         if len(base_plot) == 4 and len(sub_plot) == 4:
-            print("Should print 2 extra by now")
             base_y_3 = np.array(base_plot["3"])
             sub_y_3 = np.array(sub_plot["3"])
             base_y_4 = np.array(base_plot["4"])
             sub_y_4 = np.array(sub_plot["4"])
-            base_algo_3, = plt.plot(base_y_3, label=base_algo + "extra")
-            sub_algo_3, = plt.plot(sub_y_3, label=sub_algo + "extra")
-            base_algo_4, = plt.plot(base_y_4, label=base_algo + "extra2")
-            sub_algo_4, = plt.plot(sub_y_4, label=sub_algo + "extra2")
+            base_algo_3, = plt.plot(base_y_3, label=base_algo + " run 3")
+            sub_algo_3, = plt.plot(sub_y_3, label=sub_algo + " run 3")
+            base_algo_4, = plt.plot(base_y_4, label=base_algo + " run 3")
+            sub_algo_4, = plt.plot(sub_y_4, label=sub_algo + " run 3")
         else:    
-            plot_height = max(max(base_plot["1"]), max(sub_plot["1"]), max(base_plot["2"]), max(sub_plot["2"])) + 1000
-        label1 = base_algo + " reverse"
-        label2 = sub_algo + " reverse"
+            plot_height = max(max(base_plot["1"]), max(sub_plot["1"]), max(base_plot["2"]), max(sub_plot["2"])) * 1.1
+        label1 = base_algo + " run 2"
+        label2 = sub_algo + " run 2"
         base_algo_2, = plt.plot(base_y_2, label=label1, color="purple")
         sub_algo_2, = plt.plot(sub_y_2, label=label2, color="lightgreen")
         if len(base_plot) == 4 and len(sub_plot) == 4:
@@ -78,12 +92,13 @@ def plot_graph(dataset, base_algo, sub_algo, loss, delay):
             plt.legend(handles=[base_algor, sub_algor, base_algo_2, sub_algo_2])
     else:
         plt.legend(handles=[base_algor, sub_algor])
-    plt.ylabel("Bytes sent")
-    plt.xlabel("Seconds")
-    plt.axis([0,20,20000,plot_height])
+    plt.ylabel("MiB/s")
+    plt.xlabel("Time (seconds)")
+    #plt.yscale('log')
+    plt.axis([0,20,0,plot_height])
+    #plt.axis([0,20,1110,plot_height])
     if not os.path.exists(base_algo):
         os.makedirs(base_algo)
-    filename = base_algo + "/" + base_algo + "_vs_" + sub_algo + "_" + delay + "_" + loss + ".png"
     plt.savefig(filename)
     plt.close()
     #plt.show()
@@ -101,17 +116,100 @@ for result in results:
         else:
             result_data[dictionary["testnum"]].append(dictionary)
 
+lastf = None
+last = None
+def create_html(algo1, algo2, recursed=False):
+    global last, lastf
+
+    if not recursed:
+        create_html(algo2, algo1, recursed=True)
+
+    filename = '{}/{}_vs_{}.html'.format(algo1, algo1, algo2)
+    f = open(filename, 'w')
+
+    if lastf:
+        lastf.write(' <a href="../{}">next</a>'.format(filename))
+    lastf = f
+
+    if last:
+        f.write('<a href="../{}">previous</a>'.format(last))
+    last = filename
+
+    f.write('<title>{} vs {}</title>'.format(algo1, algo2))
+    f.write('<table border=1><tr>')
+    i = 0
+    exists = 0
+    for loss in losses:
+        for delay in delays:
+            f.write('<td>{algo1} vs {algo2} with {delay}ms delay and {loss}% loss<br><img src="{algo1}_vs_{algo2}_{delay}_{loss}.png" width=640 height=480></td>'
+                .format(algo1=algo1, algo2=algo2, delay=delay, loss=loss))
+
+            if os.path.isfile('{algo1}/{algo1}_vs_{algo2}_{delay}_{loss}.png'.format(algo1=algo1, algo2=algo2, delay=delay, loss=loss)):
+                exists += 1
+
+            i += 1
+            if i % 3 == 0:
+                f.write('</tr><tr>')
+    f.write(' This page contains {} images.'.format(exists))
+    index.write('<a href="{}">{}</a><br>\n'.format(filename, filename))
+
+def create_html_delay_loss(delay, loss):
+    f = open('params/delay={}/loss={}.html'.format(delay, loss), 'w')
+    f.write('<title>delay={} loss={}</title>'.format(delay, loss))
+    f.write('<table border=1><tr>')
+    i = 0
+    done = {}
+    for algo1 in algorithms:
+        for algo2 in algorithms:
+            if algo1 == algo2:
+                continue
+
+            if (algo2, algo1) in done:
+                continue
+
+            done[(algo1, algo2)] = True
+
+            f.write('<td>{algo1} vs {algo2} with {delay}ms delay and {loss}% loss<br><img src="../../{algo1}/{algo1}_vs_{algo2}_{delay}_{loss}.png" width=640 height=480></td>'
+                .format(algo1=algo1, algo2=algo2, delay=delay, loss=loss))
+
+            i += 1
+            if i % 3 == 0:
+                f.write('</tr><tr>')
+
 print("length result_data: " + str(len(result_data)))
 #print(result_data)
 
+index = open('index.html', 'w')
+for algo1 in algorithms:
+    for algo2 in algorithms:
+        if algo1 == algo2:
+            continue
+
+        create_html(algo1, algo2)
+
+if not os.path.isdir('params'):
+    os.makedirs('params')
+    for delay in delays:
+        os.makedirs('params/delay={}'.format(delay))
+
+for delay in delays:
+    for loss in losses:
+        create_html_delay_loss(delay, loss)
+
+exit(0)
 # Plot graph for base_algorithm and sub_algorithm
+done = {}
 for delay in delays:
     for loss in losses:
         for algo1 in algorithms:
             for algo2 in algorithms:
                 if algo1 == algo2:
                     continue
-                try:
-                    plot_graph(result_data, algo1, algo2, str(loss), str(delay))
-                except:
-                    pass
+
+                if (algo2, algo1) in done:
+                    #print('Already had {},{}: not doing {},{}'.format(algo2, algo1, algo1, algo2))
+                    continue
+
+                done[(algo1, algo2)] = True
+                plot_graph(result_data, algo1, algo2, str(loss), str(delay))
+
