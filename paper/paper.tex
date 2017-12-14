@@ -286,7 +286,26 @@ The CUBIC algorithm is a successor of the BIC algorithm \cite{cubic-tcp-congesti
 
 In our results, we see that all algorithms clearly respond to the simulated
 network circumstances, but not very much to each other. Most algorithms are
-fair towards all other algorithms.
+fair towards all other algorithms and will use their half of the connection.
+See figures \ref{fig:fair-1} and \ref{fig:fair-2}.
+
+\begin{figure}[H]
+	\makebox[\textwidth]{
+		\centering
+		\begin{minipage}{0.5\paperwidth}
+			\centering
+			\includegraphics[width=0.9\textwidth]{figs/cubic-bic-8-0.png}
+			\caption{CUBIC vs BIC with 8ms latency and 0\% loss}
+			\label{fig:fair-1}
+		\end{minipage}\hfill
+		\begin{minipage}{0.5\paperwidth}
+			\centering
+			\includegraphics[width=0.9\textwidth]{figs/dctcp-bic-8-0.png}
+			\caption{DCTCP vs BIC with 8ms latency and 0\% loss}
+			\label{fig:fair-2}
+		\end{minipage}
+	}
+\end{figure}
 
 CTCP is the only algorithm that responds excessively to others. Alone, it
 reaches the full gigabit speed; but once any other algorithm runs at the same
@@ -294,17 +313,24 @@ time (i.e. a normal test is performed), CTCP's speed consistently drops. It
 then reaches around 55 megabits ($\pm$5), while the other algorithms reach at %TODO: check 55+-5
 least 800 with good network conditions (8 milliseconds latency, 0\% loss).
 
-On top of this, CTCP also lowers its speed in response to the simulated network
+\begin{figure}[H]
+	\centering
+		\includegraphics[scale=0.4]{figs/ctcp-bic-8-0.png}
+		\caption{TODO}
+	\label{fig:packet-loss-chart}
+\end{figure}
+
+Additionally, CTCP also lowers its speed in response to the simulated network
 circumstances: with 1.2\% packet loss and 8 milliseconds latency, it will reach
 around 25 megabits, and with 290 milliseconds latency and no loss, it reaches
-around 1.5 megabits.
+around 1.5 megabits. In neither case does it reach the original 55 megabits.
 
 BBR is unique in that it barely responds to packet loss but only to delay: even
 with 1.2\% loss, as long as the delay is low (8 milliseconds in our case), it
 reaches 850$\pm$20 megabits per second. Other algorithms will reach much lower
-speeds, but we see no signs of BBR being the cause of that. In tests that
-involve two algorithms that are neither BBR nor CTCP, speeds are not higher
-than with BBR being one of the two algorithms. %TODO check this one (this was gut feeling, but looking at the data, there might be a slight effect that BBR has on things)
+speeds (24 megabits is not uncommon), but we see no signs of BBR being the
+cause of that. In tests with BBR nor CTCP, speeds are not higher than when BBR
+is one of the algorithms being tested.
 
 
 \subsection{Traffic Management}
