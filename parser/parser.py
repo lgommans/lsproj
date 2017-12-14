@@ -17,6 +17,9 @@ result_data = {}
 counter = 1
 
 def plot_graph(dataset, base_algo, sub_algo, loss, delay):
+    global datastrs
+
+    datastr = ''
     base_plot = {}
     sub_plot = {} 
     
@@ -52,11 +55,14 @@ def plot_graph(dataset, base_algo, sub_algo, loss, delay):
                     #sub_plot[dataset[result][client2]["run"]] = [int(x) for x in dataset[result][client2]["bandwidth"].strip().split(" ")]
                     base_plot[dataset[result][client1]["run"]] = [float(x)/(2**20) for x in dataset[result][client1]["bandwidth"].strip().split(" ")]
                     sub_plot[dataset[result][client2]["run"]] = [float(x)/(2**20) for x in dataset[result][client2]["bandwidth"].strip().split(" ")]
+                    datastr += 'base' + dataset[result][client1]["run"] + ': ' + str(base_plot[dataset[result][client1]["run"]]) + '\n'
+                    datastr += 'base' + dataset[result][client2]["run"] + ': ' + str(base_plot[dataset[result][client2]["run"]]) + '\n'
     
     if "1" not in base_plot:
         return False
 
     filename = base_algo + "/" + base_algo + "_vs_" + sub_algo + "_" + delay + "_" + loss + ".png"
+    datastrs[base_algo + "_vs_" + sub_algo + "_" + delay + "_" + loss] = datastr
     print(filename)
 
     #print("Bandwidth points " + base_algo +  " per 1 second: " + str(base_plot))
@@ -141,8 +147,13 @@ def create_html(algo1, algo2, recursed=False):
     exists = 0
     for loss in losses:
         for delay in delays:
-            f.write('<td>{algo1} vs {algo2} with {delay}ms delay and {loss}% loss<br><img src="{algo1}_vs_{algo2}_{delay}_{loss}.png" width=640 height=480></td>'
-                .format(algo1=algo1, algo2=algo2, delay=delay, loss=loss))
+            try:
+                datastr = datastrs['{}_vs_{}_{}_{}'.format(algo1, algo2, delay, loss)]
+            except:
+                datastr = '(unknown)'
+
+            f.write('<td>{algo1} vs {algo2} with {delay}ms delay and {loss}% loss<br><img src="{algo1}_vs_{algo2}_{delay}_{loss}.png" title="{datastr}" width=640 height=480></td>'
+                .format(algo1=algo1, algo2=algo2, delay=delay, loss=loss, datastr=datastr))
 
             if os.path.isfile('{algo1}/{algo1}_vs_{algo2}_{delay}_{loss}.png'.format(algo1=algo1, algo2=algo2, delay=delay, loss=loss)):
                 exists += 1
@@ -169,8 +180,13 @@ def create_html_delay_loss(delay, loss):
 
             done[(algo1, algo2)] = True
 
-            f.write('<td>{algo1} vs {algo2} with {delay}ms delay and {loss}% loss<br><img src="../../{algo1}/{algo1}_vs_{algo2}_{delay}_{loss}.png" width=640 height=480></td>'
-                .format(algo1=algo1, algo2=algo2, delay=delay, loss=loss))
+            try:
+                datastr = datastrs['{}_vs_{}_{}_{}'.format(algo1, algo2, delay, loss)]
+            except:
+                datastr = '(unknown)'
+
+            f.write('<td>{algo1} vs {algo2} with {delay}ms delay and {loss}% loss<br><img src="../../{algo1}/{algo1}_vs_{algo2}_{delay}_{loss}.png" width=640 height=480 title="{datastr}"></td>'
+                .format(algo1=algo1, algo2=algo2, delay=delay, loss=loss, datastr=datastr))
 
             i += 1
             if i % 3 == 0:
@@ -178,6 +194,23 @@ def create_html_delay_loss(delay, loss):
 
 print("length result_data: " + str(len(result_data)))
 #print(result_data)
+
+# Plot graph for base_algorithm and sub_algorithm
+datastrs = {}
+done = {}
+for delay in delays:
+    for loss in losses:
+        for algo1 in algorithms:
+            for algo2 in algorithms:
+                if algo1 == algo2:
+                    continue
+
+                if (algo2, algo1) in done:
+                    #print('Already had {},{}: not doing {},{}'.format(algo2, algo1, algo1, algo2))
+                    continue
+
+                done[(algo1, algo2)] = True
+                plot_graph(result_data, algo1, algo2, str(loss), str(delay))
 
 index = open('index.html', 'w')
 for algo1 in algorithms:
@@ -195,20 +228,4 @@ if not os.path.isdir('params'):
 for delay in delays:
     for loss in losses:
         create_html_delay_loss(delay, loss)
-
-# Plot graph for base_algorithm and sub_algorithm
-done = {}
-for delay in delays:
-    for loss in losses:
-        for algo1 in algorithms:
-            for algo2 in algorithms:
-                if algo1 == algo2:
-                    continue
-
-                if (algo2, algo1) in done:
-                    #print('Already had {},{}: not doing {},{}'.format(algo2, algo1, algo1, algo2))
-                    continue
-
-                done[(algo1, algo2)] = True
-                plot_graph(result_data, algo1, algo2, str(loss), str(delay))
 
