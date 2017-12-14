@@ -56,7 +56,7 @@ def plot_graph(dataset, base_algo, sub_algo, loss, delay):
                     base_plot[dataset[result][client1]["run"]] = [float(x)/(2**20) for x in dataset[result][client1]["bandwidth"].strip().split(" ")]
                     sub_plot[dataset[result][client2]["run"]] = [float(x)/(2**20) for x in dataset[result][client2]["bandwidth"].strip().split(" ")]
                     datastr += 'base' + dataset[result][client1]["run"] + ': ' + str(base_plot[dataset[result][client1]["run"]]) + '\n'
-                    datastr += 'base' + dataset[result][client2]["run"] + ': ' + str(base_plot[dataset[result][client2]["run"]]) + '\n'
+                    datastr += 'sub' + dataset[result][client2]["run"] + ': ' + str(sub_plot[dataset[result][client2]["run"]]) + '\n'
     
     if "1" not in base_plot:
         return False
