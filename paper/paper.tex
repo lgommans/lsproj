@@ -352,14 +352,24 @@ The full set of results is available online\cite{git-lsproj}.
 
 
 \subsection{Traffic Management}
-We propose two possible solutions to manage traffic from a multitenant datacenter to customers when unfair TCP congestion control algorithms are used: Traffic shaping based Monitoring and detection of unaccepted TCP congestion algorithms in the network. 
+
+Our results show that traffic management is currently not necessary. However, a
+tenant might purposefully install an unfair algorithm. In this section we
+discuss different possible approaches a datacenter could take.
+
+We propose two possible solutions to manage traffic from a multitenant
+datacenter to customers when unfair TCP congestion control algorithms are used:
+traffic shaping based monitoring, and detection of unaccepted TCP congestion
+algorithms in the network. 
 
 \subsubsection{Traffic shaping based Monitoring}
-With the use of a hypothetical TCP congestion control algorithm that is unfair to other TCP congestion control algorithms, the bandwidth allocation to one customer can be higher than for other customers using the default congestion control algorithms. For example: when a TCP congestion control algorithm shows an aggressive increase and keeps pushing data over the network, other fair TCP congestion algorithms will reduce the sending rate of the data transfer as packet loss occurs. One important condition for this unfair congestion control algorithm is that it should not be that agressive such that it behaves in a Denial of Service manner.
 
-To solve this issue, we propose a monitoring solution which monitors the bandwidth usage per server and controls the priority for the traffic sent by a server.The solution uses traffic shaping to control the priority of the traffic per server:
+With the use of a hypothetical TCP congestion control algorithm that is unfair towards other flows, the bandwidth allocation to one customer would be higher than to other customers. When a TCP flow shows an aggressive increase and keeps pushing data over the network, other (fair) algorithms will reduce the transmission rate as packet loss occurs. One important condition for this unfair congestion control algorithm is that it should not be agressive to the extent of causing a denial of service.
+
+To mitigate this, the bandwidth usage per server could be monitored, prioritizing the traffic sent by some servers. The solution uses traffic shaping to control the priority of the traffic per server:
+
 \begin{enumerate}
-	\item The monitoring solution detects periodically whether the bandwidth in the link is fully utilized. If this is the case, the next step will be initiated. If not, it continues monitoring the link utilization.
+	\item The monitoring solution measures periodically whether the bandwidth in the link is fully utilized. If this is the case, the next step will be performed. If not, it continues monitoring the link utilization.
 	\item The monitoring solution calculates periodically per server whether its bandwidth usage deviates more than $\alpha$ from the average bandwidth usage. $\alpha$ is deviated bandwidth and is set according to an acceptable deviation value. The following formula is used to calculate the standard deviation: $s_{i} = \sqrt{\frac{\sum_{i=1}^N (x_i - \overline{x})^2}{N-1} }$. $N$ is the amount of active servers on the link. $\overline{x}$ is the average amount of bandwidth for all active servers on the link. $x_i$ is the bandwidth of the current server and $s_{i}$ shows the standard deviation in bandwidth for server $i$. If $s_{i}$ is a negative value, no priority change will be applied as the bandwidth usage is lower than average for the server. If $s_{i} <= \alpha$, then no priority change will be applied. If $s_{i} > \alpha$, the priority will be changed to a lower value.
 	\item The monitoring solution provides information of the servers where the priority will be set to a lower value to the traffic shaping controller.
 	\item The traffic shaping controller sets the priority for the servers to a lower value, so that the traffic coming from the servers that use $\alpha$ more than average bandwidth has less preference than traffic closer to the average bandwidth and lower.
@@ -368,8 +378,16 @@ To solve this issue, we propose a monitoring solution which monitors the bandwid
 
 \subsubsection{Detection of unaccepted TCP congestion control algorithms}
 
-In \cite{tcp-congestion-identification} a method to remotely identify used TCP congestion avoidance algorithms is described. The paper states that 
-they were able to identify all default TCP algorithms, but some non-default algorithms could not be identified. The tests performed are limited to remote web servers, so it requires more research to reliably implement such a method. If this method is deemed reliable, it can be useful to detect whether an unaccepted TCP congestion control algorithm is used as it will not match any of the default TCP algorithms used. Based on that the traffic of the unacceptable TCP congestion control algorithms can be shaped by lowering their priority.
+Peng Yang et al. describe a method to remotely identify used TCP congestion
+avoidance algorithms\cite{tcp-congestion-identification}. The paper states that
+they were able to identify all default TCP algorithms, but some non-default
+algorithms could not be identified. The tests performed are limited to remote
+web servers, so it requires more research to reliably implement such a method
+in a generic manner. If this method is deemed reliable, it can be useful to
+detect whether an unfair TCP congestion control algorithm is used as it will
+not match any of the default TCP algorithms used. Based on that the traffic of
+the unacceptable TCP congestion control algorithms can be shaped by lowering
+their priority.
 
 
 \section{Discussion}\label{sec:discussion}
