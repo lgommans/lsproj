@@ -332,6 +332,15 @@ circumstances: with 1.2\% packet loss and 8 milliseconds latency, it will reach
 around 25 megabits, and with 290 milliseconds latency and no loss, it reaches
 around 1.5 megabits. In neither case does it reach the original 55 megabits.
 
+Because of the exceptional results for CTCP, we performed the test again on
+different hardware. This yielded the same result. To verify that it is CTCP and
+not our software that performs differently on Windows, we setup a small
+experiment using \texttt{iperf}. The setup was the same as our original
+experimental setup with one sender on two hosts and two receivers on one host,
+only we manually started \texttt{iperf} bandwidth tests rather than doing it in
+an automated fashion with Python. In this instance, Windows performed normally
+and did not back off exceptionally when introducing another contender.
+
 BBR is unique in that it barely responds to packet loss but only to delay: even
 with 1.2\% loss, as long as the delay is low (8 milliseconds in our case), it
 reaches 850$\pm$20 megabits per second. Other algorithms will reach much lower
@@ -358,21 +367,63 @@ To solve this issue, we propose a monitoring solution which monitors the bandwid
 \end{enumerate}
 
 \subsubsection{Detection of unaccepted TCP congestion control algorithms}
+
 In \cite{tcp-congestion-identification} a method to remotely identify used TCP congestion avoidance algorithms is described. The paper states that 
 they were able to identify all default TCP algorithms, but some non-default algorithms could not be identified. The tests performed are limited to remote web servers, so it requires more research to reliably implement such a method. If this method is deemed reliable, it can be useful to detect whether an unaccepted TCP congestion control algorithm is used as it will not match any of the default TCP algorithms used. Based on that the traffic of the unacceptable TCP congestion control algorithms can be shaped by lowering their priority.
 
+
 \section{Discussion}\label{sec:discussion}
-The CTCP measurements were done on a Windows 10 machine. All other measurements were done on machines running Ubuntu 17.04. This might have introduced issues while measuring the CTCP algorithm versus any other congestion algorithm. CTCP did not show the expected behavior when running the tests. According to our measurements, all other algorithms are fair in sharing bandwidth with other algorithms. However, all measurements from CTCP show different results. We think this might be caused by the way Python sockets or Python calls are handled in Windows 10. We have performed the 0\% loss 0ms delay test on different hardware, which resulted in the same low value of bandwidth usage. When we used \texttt{iperf}, it reached the half of 1 Gbps versus other congestion algorithms as expected. We also increased the amount of bytes sent each time, where it reached 1 Gbps on its own. However, when testing it against another congestion algorithm it still showed the same behavior: performing with a low throughput. Therefore, we think the call handling of Python in Windows encounters more delay than Linux, but this requires more testing.
+
+The CTCP measurements were done on a Windows 10 machine because there is no
+up-to-date implementation of CTCP for Linux. All other measurements were done
+on machines running Ubuntu 17.04. This might have introduced issues while
+measuring the CTCP algorithm versus any other congestion algorithm. According
+to our measurements, all other algorithms are fair in sharing bandwidth with
+each other; only CTCP consistently and excessively reduced its bandwidth
+allocation.
+
+Without any concurrent flows, Windows does reach gigabit speed. On different
+hardware, it showed the same, recessive behaviour. We think this might be
+caused by the way Python socket operations are handled in Windows. When
+repeating the test with \texttt{iperf}, which is written in C, this behaviour
+no longer occurs. Even when using the Python equivalent of
+\texttt{while(true)\{ socket.send(data); \}}, the bandwidth allocation did not
+change. We theorize that the difference is caused by something in the
+\texttt{send} call. An alternative theory is that Microsoft Windows for
+workstations have a different implementation than Microsoft Windows Server
+systems.
+
+BBR is the best-performing algorithm in our set, because it barely responds to
+packet loss. As mentioned in the results, we see no hard evidence that this
+causes other algorithms to reduce their speed further, but there are slight
+indications. For example in the test of DCTCP versus BBR, DCTCP reaches around
+0.2 to 0.6 megabytes per second. In the test of DCTCP versus BIC, this is 0.3
+to 0.7 megabytes per second. The difference is large nor statistically
+significant, but it warrants looking into. On the scale of 0.7 megabytes per
+second, a tenth of a megabyte does make a difference.
+
 
 \section{Future work}\label{sec:futurework}
-Running a mixed environment of Linux and Windows where Python is running introduces issues. We expect the call handling of Python in Windows encounters more delay than in Linux, but this requires more testing. The tests for CTCP might have to be performed again when full speeds can be reached by using the same settings. 
-The CTCP tests are currently executed on Windows 10. This might also be performed on a Windows Server instance as it possibly handles the network in a different way.
 
-All tests described in this paper can be performed with more parallel connections, so that even when using a lot of parallel connections with two different congestion control algorithms, it is proven that the congestion control algorithms are fair.
+Running a mixed environment of Linux and Windows where Python is running
+introduced issues. We expect the send call of Python in Windows is implemented
+differently than in Linux, but this requires more testing. The tests for CTCP
+should be performed again when the reason for the discrepancy is known and can
+be mitigated. The results should also be verified using a Microsoft Windows
+Server instance.
+
+Our tests were done using three nodes in a switched network. To make sure our
+results hold in practice, future work could introduce a routed network with
+many more nodes.
+
+TODO Luc monitoring solution read up
 
 In this paper we have proposed a monitoring solution, which checks for the deviation between the server bandwidth on a link and the average bandwidth used by servers on a link. This solution requires performance testing, such that it is capable of running in a datacenter and not causing delay. Also an $\alpha$ value has to be determined that works in most environments, without ruling out servers that are not running unfair TCP congestion protocols.
 
+TODO bbr turn on halfway through a test, does others' speed lessen?
+
 \section{Conclusion}\label{sec:conclusion}
+
 Our main research question is: {\it How can a datacenter provide a reliable and performant environment for customers when multiple TCP congestion control algorithms are used in the network?} 
 
 The results have shown that the current default TCP congestion control algorithms are showing a fair behavior: The bandwidth is allocated equally among all nodes. Therefore, currently no traffic control is needed, unless someone would create an unfair TCP congestion control algorithm. This can be detected by one of the monitoring solutions proposed in this paper.
