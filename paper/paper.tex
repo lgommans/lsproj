@@ -217,7 +217,7 @@ The tests will be performed using scripts written in Python [\ref{appendix:pytho
 
 \subsubsection{Testing hardware}
 
-The specifications of the hardware used for the tests are shown in table \ref{table:spec1}, table \ref{table:spec2} and table \ref{table:spec3}. The switch shown in table \ref{table:spec3} has all router related functionalities, which might impact the network speed, turned off.
+The specifications of the hardware used for the tests are shown in tables \ref{table:spec1} and \ref{table:spec2}.
 
 \begin{table}[H]
 	\centering
@@ -228,7 +228,7 @@ The specifications of the hardware used for the tests are shown in table \ref{ta
 	\hline  Model & Dell Optiplex 7010\\
 	\hline  CPU & Intel(R) Core(TM) i5-3570S CPU @ 3.10GHz\\
 	\hline  Memory & 12GB\\
-	\hline  NIC & Intel Corporation 82579LM Gigabit Network Connection (rev 04)\\
+	\hline  NIC & Intel 82579LM Gigabit Network Connection (rev 04)\\
 	\hline	NIC Driver & e100e 3.2.6-k\\
 	\hline
 	\end{tabular}
@@ -350,11 +350,11 @@ With the use of a hypothetical TCP congestion control algorithm that is unfair t
 
 To solve this issue, we propose a monitoring solution which monitors the bandwidth usage per server and controls the priority for the traffic sent by a server.The solution uses traffic shaping to control the priority of the traffic per server:
 \begin{enumerate}
-	\item{The monitoring solution detects unfair bandwidth allocation on a congested link. It detects a congested link by checking for delay and packet loss in network segments.}
-	\item{The monitoring solution calculates per server whether its bandwidth usage deviates more than $\alpha$ from the average bandwidth usage. $\alpha$ is deviated bandwidth and is set according to an acceptable deviation value. The following formula is used to calculate the standard deviation: $s_{i} = \sqrt{\frac{\sum_{i=1}^N (x_i - \overline{x})^2}{N-1} }$. $N$ is the amount of active servers on the link. $\overline{x}$ is the average amount of bandwidth for all active servers on the link. $x_i$ is the bandwidth of the current server and $s_{i}$ shows the standard deviation in bandwidth for server $i$. If $s_{i}$ is a negative value, no priority change will be applied as the bandwidth usage is lower than average for the server. If $s_{i} <= \alpha$, then no priority change will be applied. If $s_{i} > \alpha$, the priority will be changed to a lower value.}
-	\item{The monitoring solution provides information of the servers where the priority will be set to a lower value to the traffic shaping controller.}
-	\item{The traffic shaping controller sets the priority for the servers to a lower value, so that the traffic coming from the servers that use $\alpha$ more than average bandwidth has less preference than traffic closer to the average bandwidth and lower.}
-	\item{The monitoring solution periodically checks if congestion and delay are not detected. If both are not detected, the traffic shaping policy is reversed again as more bandwidth is available to allocate to customers.}
+	\item The monitoring solution detects unfair bandwidth allocation on a congested link. It detects a congested link by checking for delay and packet loss in network segments.
+	\item The monitoring solution calculates per server whether its bandwidth usage deviates more than $\alpha$ from the average bandwidth usage. $\alpha$ is deviated bandwidth and is set according to an acceptable deviation value. The following formula is used to calculate the standard deviation: $s_{i} = \sqrt{\frac{\sum_{i=1}^N (x_i - \overline{x})^2}{N-1} }$. $N$ is the amount of active servers on the link. $\overline{x}$ is the average amount of bandwidth for all active servers on the link. $x_i$ is the bandwidth of the current server and $s_{i}$ shows the standard deviation in bandwidth for server $i$. If $s_{i}$ is a negative value, no priority change will be applied as the bandwidth usage is lower than average for the server. If $s_{i} <= \alpha$, then no priority change will be applied. If $s_{i} > \alpha$, the priority will be changed to a lower value.
+	\item The monitoring solution provides information of the servers where the priority will be set to a lower value to the traffic shaping controller.
+	\item The traffic shaping controller sets the priority for the servers to a lower value, so that the traffic coming from the servers that use $\alpha$ more than average bandwidth has less preference than traffic closer to the average bandwidth and lower.
+	\item The monitoring solution periodically checks if congestion and delay are not detected. If both are not detected, the traffic shaping policy is reversed again as more bandwidth is available to allocate to customers.
 \end{enumerate}
 
 Todo: Not sure about last enumerate item.
