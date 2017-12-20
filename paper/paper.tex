@@ -426,14 +426,9 @@ TODO bbr turn on halfway through a test, does others' speed lessen?
 
 Our main research question is: {\it How can a datacenter provide a reliable and performant environment for customers when multiple TCP congestion control algorithms are used in the network?} 
 
-The results have shown that the current default TCP congestion control algorithms are showing a fair behavior: The bandwidth is allocated equally among all nodes. Therefore, currently no traffic control is needed, unless someone would create an unfair TCP congestion control algorithm. This can be detected by one of the monitoring solutions proposed in this paper.
+The results have shown that the current default TCP congestion control algorithms are showing a fair behavior: The bandwidth is allocated equally among all nodes. Therefore, currently no traffic control is needed, unless someone would create an unfair TCP congestion control algorithm. This can, after more research, be detected by one of the monitoring solutions proposed in this paper. As for the tested TCP congestion control algorithms, there is no impact on the service and availability for customers when using those algorithms mixed in one environment.
 
-To do: Mention items:
-\begin{enumerate}
-	\item{With current TCP congestion control algorithms behaving fair: No traffic control is currently needed & there is no impact on service and availability for customers}
-	\item{BBR is best performing algorithm of five tested}
-	\item{DCTCP is only suitable when both server and client are in same datacenter}
-	\item{Windows needs further testing}
+The BBR congestion control algorithm performs best when delay and loss occur of all TCP congestion control algorithms tested. DCTCP is only suitable when both the server and client are in the same datacenter, because the start up of the connection is slow when congestion in the network occurs. For datacenters it works well, because it keeps the queue lengths to a minimum, assuring a packet arrives at its destination.
 \end{enumerate}
 
 
