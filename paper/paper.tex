@@ -339,18 +339,30 @@ The full set of results is available online\cite{git-lsproj}.
 
 
 \subsection{Traffic Management}
+We propose two possible solutions to manage traffic from a multitenant datacenter to customers when unfair TCP congestion control algorithms are used: Traffic shaping based Monitoring and detection of unaccepted TCP congestion algorithms in the network. 
 
-- Includes what is available for trafic management in a datacenter.
-- Measures to take to equally allocate bandwidth to customers.
+\subsubsection{Traffic shaping based Monitoring}
+With the use of a hypothetical TCP congestion control algorithm that is unfair to other TCP congestion control algorithms, the bandwidth allocation to one customer can be higher to other customers using the default congestion control algorithms. For example: when a TCP congestion control algorithm shows an aggressive increase and keeps pushing data over the network, other fair TCP congestion algorithms will reduce the sending rate of the data transfer as packet loss occurs. One important condition for this unfair congestion control algorithm is that it should not be agressive such that it behaves in a Denial of Service manner.
 
-\subsubsection{Quality of Service}
+To solve this issue, we propose a monitoring solution which monitors the bandwidth usage per server and controls the priority for the traffic sent by a server.The solution uses traffic shaping to control the priority of the traffic per server:
+\begin{enumerate}
+	\item{The monitoring solution detects unfair bandwidth allocation on a congested link. It detects a congested link by checking for delay and packet loss in network segments.}
+	\item{The monitoring solution calculates per server whether its bandwidth usage deviates more than $\alpha$ from the average bandwidth usage. $\alpha$ is deviated bandwidth and is set according to an acceptable deviation value. The following formula is used to calculate the standard deviation: $s_{i} = \sqrt{\frac{\sum_{i=1}^N (x_i - \overline{x})^2}{N-1} }$. $N$ is the amount of active servers on the link. $\overline{x}$ is the average amount of bandwidth for all active servers on the link. $x_i$ is the bandwidth of the current server and $s_{i}$ shows the standard deviation in bandwidth for server $i$. If $s_{i}$ is a negative value, no priority change will be applied as the bandwidth usage is lower than average for the server. If $s_{i} <= \alpha$, then no priority change will be applied. If $s_{i} > \alpha$, the priority will be changed to a lower value.}
+	\item{The monitoring solution provides information of the servers where the priority will be set to a lower value to the traffic shaping controller.}
+	\item{The traffic shaping controller sets the priority for the servers to a lower value, so that the traffic coming from the servers that use $\alpha$ more than average bandwidth has less preference than traffic closer to the average bandwidth and lower.}
+	\item{The monitoring solution periodically checks if congestion and delay are not detected. If both are not detected, the traffic shaping policy is reversed again as more bandwidth is available to allocate to customers.}
+\end{enumerate}
 
+To do: Not sure about last enumerate item.
+
+\subsubsection{Detection of unaccepted TCP congestion control algorithms}
 
 
 \section{Discussion}
 
 
 \section{Conclusion}
+To do: Monitoring $\alpha$ value research. future work.
 
 % For reference, from the proposal:
 
