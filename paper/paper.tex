@@ -360,7 +360,8 @@ To solve this issue, we propose a monitoring solution which monitors the bandwid
 Todo: Not sure about last enumerate item.
 
 \subsubsection{Detection of unaccepted TCP congestion control algorithms}
-
+In \cite{tcp-congestion-identification} a method to remotely identify used TCP congestion avoidance algorithms is described. The paper states that 
+they were able to identify all default TCP algorithms, but some non-default algorithms could not be identified. The tests performed are limited to remote web servers, so it requires more research to reliably implement such a method. If this method is deemed reliable, it can be useful to detect whether an unaccepted TCP congestion control algorithm is used as it will not match any of the default TCP algorithms used. Based on that the traffic of the unacceptable TCP congestion control algorithms can be shaped by lowering their priority.
 
 \section{Discussion}\label{sec:discussion}
 
