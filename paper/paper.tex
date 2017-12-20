@@ -7,6 +7,9 @@
 \usepackage{graphicx}
 \bibliography{references.bib}
 
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{\baselineskip}
+
 \title{TCP Congestion Algorithms In Datacenters \\
 	\vspace{0.3cm}
 	{\large LS Project}
@@ -212,8 +215,12 @@ The country numbers in figure \ref{fig:verizon-delay-chart} are only used to sho
 
 \subsubsection{Performing time-based automated tests}
 
-The tests will be performed using scripts written in Python [\ref{appendix:python}]. The scripts either act as controller or as disciple. The controller is responsible for controlling the tests, by synchronizing the time, exchanging commands to run, modify or stop the tests and gathering data. The disciple is the listener and executes all task commands the controller sends. The commands include getting the hostname of a disciple, setting the TCP congestion algorithm of a disciple, configuring the time of a disciple, starting the data transfer and measurement tools on the disciple and closing the connection with the controller.
-
+The tests will be performed using scripts written in Python\cite{git-lsproj}.
+All nodes run a client, which performs actions as instructed by the controller.
+The controller is responsible for controlling the tests: synchronizing time
+among nodes, setting the TCP congestion algorithm of a node, and requesting one
+node to open a listening port and instructing another to start sending at a
+given time. Nodes report their measurements back to the controller.
 
 \subsubsection{Testing hardware}
 
@@ -434,8 +441,6 @@ Our tests were done using three nodes in a switched network. To make sure our
 results hold in practice, future work could introduce a routed network with
 many more nodes.
 
-TODO Luc monitoring solution read up
-
 In this paper we have proposed a monitoring solution, which checks for the deviation between the server bandwidth on a link and the average bandwidth used by servers on a link. This solution requires performance testing, such that it is capable of running in a datacenter and not causing delay. Also an $\alpha$ value has to be determined that works in most environments, without ruling out servers that are not running unfair TCP congestion protocols.
 
 BBR appears to perform better in a congested network than the other tested protocols. In order to validate that BBR does not push away other TCP congestion algorithms a new testing method can be used. The data transfer with a TCP congestion algorithm is started and halfway the data transfer with BBR is started. This method shows whether a BBR data transfer has a large influence on the data transfer of other TCP congestion algorithms.
@@ -458,11 +463,6 @@ congestion occurs. Within datacenters this works well, because with no
 congestion it keeps the queue lengths to a minimum.
 
 \printbibliography
-
-\appendix
-\section{Python}
-\label{appendix:python}
-SCRIPT
 
 \end{document}
 
