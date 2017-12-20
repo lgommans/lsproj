@@ -32,7 +32,7 @@ bandwidth equally between network flows.
 
 Some congestion control algorithms are more aggressive than others, and it has
 been reported that some algorithms cause others to back off excessively.
-Tenants may, perhaps inadvertedly, cause inequal bandwidth distributions during
+Tenants may, perhaps inadvertently, cause unequal bandwidth distributions during
 times of congestion.
 
 In this research, we compare five algorithms under different network conditions
@@ -55,7 +55,7 @@ congestion in the network and distribute bandwidth fairly among users. Several
 algorithms are available to perform this function. Each has a different behaviour
 depending on the network's characteristics.
 
-This report includes a performance and behavior analysis of different TCP congestion control algorithms in a (simulated) multitenant datacenter network. Based on the results, we will recommend datacenters on measures to take to keep providing a reliable environment for customers when multiple congestion control algoritms are active in the network, for example using Quality of Service or discouraging certain congestion control algorithms. The main research question is: {\it How can a datacenter provide a reliable and performant environment for customers when multiple TCP congestion control algorithms are used in the
+This report includes a performance and behaviour analysis of different TCP congestion control algorithms in a (simulated) multitenant datacenter network. Based on the results, we will recommend datacenters on measures to take to keep providing a reliable environment for customers when multiple congestion control algorithms are active in the network, for example using Quality of Service or discouraging certain congestion control algorithms. The main research question is: {\it How can a datacenter provide a reliable and performing environment for customers when multiple TCP congestion control algorithms are used in the
 network?}
 
 In the next section, we will discuss related work. Section \ref{sec:method}
@@ -72,7 +72,7 @@ can be found in \ref{sub:experiment-results}. We discuss our results in section
 
 In 2010, the algorithm DCTCP was described by Mohammad Alizadeh et
 al.\cite{dctcp-congestion-original} and published as
-RFC8257\cite{dctcp-congestion} in 2017. DCTCP is optimized for datacenters and
+RFC8257\cite{dctcp-congestion} in 2017. DCTCP is optimised for datacenters and
 provides a high-burst tolerance, low latency, and high throughput when the
 datacenter has a small part of the buffer available\cite{dctcp-congestion}.
 
@@ -102,7 +102,7 @@ During this research, performance comparison tests of various TCP congestion alg
 
 \subsection{Selecting TCP congestion algorithms}
 
-In order to select the most common TCP congestion algorithms desk research will be performed. This desk research will show which algorithms are used more often than other algoritms by looking for the default algorithms in Operating Systems. Based on those results a list of TCP congestion algorithms will be composed.
+In order to select the most common TCP congestion algorithms desk research will be performed. This desk research will show which algorithms are used more often than other algorithms by looking for the default algorithms in Operating Systems. Based on those results a list of TCP congestion algorithms will be composed.
 
 
 \subsection{Comparing Performance}
@@ -110,7 +110,7 @@ In order to select the most common TCP congestion algorithms desk research will 
 We will analyse one common scenario: multiple servers of different owners
 inside a multitenant datacenter, sends data to clients outside the datacenter.
 This could be users downloading software, the bursts while streaming a video
-or movie, or large resources on a webpage.
+or movie, or large resources on a web page.
 
 We will create a bottleneck on the path to the user to see how different
 congestion algorithms handle this. The connection will be full duplex and have
@@ -146,7 +146,7 @@ the fairness, the bandwidth usage per second per algorithm is measured. If two
 different algorithms use similar amounts of bandwidth, they can be said to be
 fair relative to each other.
 
-The tests conducted with the algorithms have two environment variables: packet loss and delay. Those environment variables are simulated using \texttt{netem}, which is a network emulation functionality in several Linux distributions \cite{linux-netem}. \texttt{netem} is applied to the incoming side of the interfaces of the clients to emulate the same packet loss and delay. Windows, which is tested as a server, does not support \texttt{netem}. Therefore the packet loss and delay are applied to the incoming interfaces of the clients. Packet loss and delay are chosen as the behavior of most TCP algorithms depends on those variables \cite{bbr-congestion}\cite{bic-tcp-congestion}\cite{compound-tcp-congestion}\cite{cubic-tcp-congestion}\cite{dctcp-congestion}. The values for the environment variables are chosen based on measurements performed by Verizon \cite{verizon-latency}.
+The tests conducted with the algorithms have two environment variables: packet loss and delay. Those environment variables are simulated using \texttt{netem}, which is a network emulation functionality in several Linux distributions \cite{linux-netem}. \texttt{netem} is applied to the incoming side of the interfaces of the clients to emulate the same packet loss and delay. Windows, which is tested as a server, does not support \texttt{netem}. Therefore the packet loss and delay are applied to the incoming interfaces of the clients. Packet loss and delay are chosen as the behaviour of most TCP algorithms depends on those variables \cite{bbr-congestion}\cite{bic-tcp-congestion}\cite{compound-tcp-congestion}\cite{cubic-tcp-congestion}\cite{dctcp-congestion}. The values for the environment variables are chosen based on measurements performed by Verizon \cite{verizon-latency}.
 
 Each test is run at least twice. When results are conflicting or unexpected, we
 ran a test more often and on different hardware.
@@ -157,7 +157,7 @@ ran a test more often and on different hardware.
 
 \subsubsection{Determining the Packet loss and Delay}
 
-The dataset of Verizon \cite{verizon-latency} is used to calculate the packet loss and delay used in this research. The dataset includes global information and shows averages per month over the year 2017. The packet loss is calculated by taking the average of the Verizon Business Packet Delivery Statistics for Country Specific Metrics for each country. Those averages were inverted by subtracting the packet delivery percentage from 100, to show the actual packet loss in percentages and not the packet delivery. Based on the ascending sorted values a bar chart was created. This bar chart is shown in figure \ref{fig:packet-loss-chart}
+The data set of Verizon \cite{verizon-latency} is used to calculate the packet loss and delay used in this research. The data set includes global information and shows averages per month over the year 2017. The packet loss is calculated by taking the average of the Verizon Business Packet Delivery Statistics for Country Specific Metrics for each country. Those averages were inverted by subtracting the packet delivery percentage from 100, to show the actual packet loss in percentages and not the packet delivery. Based on the ascending sorted values a bar chart was created. This bar chart is shown in figure \ref{fig:packet-loss-chart}
 
 \begin{figure}[H]
 	\centering
@@ -217,7 +217,7 @@ The country numbers in figure \ref{fig:verizon-delay-chart} are only used to sho
 
 The tests will be performed using scripts written in Python\cite{git-lsproj}.
 All nodes run a client, which performs actions as instructed by the controller.
-The controller is responsible for controlling the tests: synchronizing time
+The controller is responsible for controlling the tests: synchronising time
 among nodes, setting the TCP congestion algorithm of a node, and requesting one
 node to open a listening port and instructing another to start sending at a
 given time. Nodes report their measurements back to the controller.
@@ -257,7 +257,7 @@ The specifications of the hardware used for the tests are shown in tables \ref{t
 
 \subsection{Traffic Management}
 
-Desk research will be conducted to gather information related to traffic management. The goal is to find a mechanism that is capable of allocating bandwidth equally between customers of a datacenter. This is done by analyzing the results from the algorithm comparison and the initial desk research on traffic management.
+Desk research will be conducted to gather information related to traffic management. The goal is to find a mechanism that is capable of allocating bandwidth equally between customers of a datacenter. This is done by analysing the results from the algorithm comparison and the initial desk research on traffic management.
 
 
 \section{Results}\label{sec:results}
@@ -272,14 +272,14 @@ The most common TCP congestion algorithms are CTCP, CUBIC and BIC. CTCP is the d
 
 \subsection{Theoretical Algorithm Characteristics}\label{sub:algos-theoretical}
 
-The BBR algorithm depends on parameters $BtlBw$ and $RT_{prop}$ \cite{bbr-congestion}. Those parameters are estimates defined by the BBR algorithm. $BtlBw$ specifies the bandwidth at the slowest link in each direction and $RT_{prop}$ is the round-trip propagation time. $RT_{prop} = RTT - queuing delay - processing delay$, which results in the minimum amount of time for round trip propagation in case there are no queueing or processing delays. Using those two parameters, the Bandwidth Delay Product (BDP) is calculated, which is the maximum possible amount of data being sent in a network: $BDP = BtlBw * RT_{prop}$. As long as the amount of data in transit is less than the $BDP$ and $BtlBw$, the delivery rate is increased. If the amount of data in transit is equal to $BtlBw$ the delivery rate can not go up anymore. The $RTT$ can never be lower than $RT_{prop}$... explain more on delay perhaps?.
+The BBR algorithm depends on parameters $BtlBw$ and $RT_{prop}$ \cite{bbr-congestion}. Those parameters are estimates defined by the BBR algorithm. $BtlBw$ specifies the bandwidth at the slowest link in each direction and $RT_{prop}$ is the round-trip propagation time. $RT_{prop} = RTT - queuing delay - processing delay$, which results in the minimum amount of time for round trip propagation in case there are no queuing or processing delays. Using those two parameters, the Bandwidth Delay Product (BDP) is calculated, which is the maximum possible amount of data being sent in a network: $BDP = BtlBw * RT_{prop}$. As long as the amount of data in transit is less than the $BDP$ and $BtlBw$, the delivery rate is increased. If the amount of data in transit is equal to $BtlBw$ the delivery rate can not go up anymore. The $RTT$ can never be lower than $RT_{prop}$... explain more on delay perhaps?.
 
-The CTCP algorithm is a combination of a loss-based and delay-based congestion protocol \cite{compound-tcp-congestion}. For the loss-based component, the variable conventional congestion window, $cwnd$, was introduced. For the delay-based component, the variable delay window, $dwnd$, was introduced. The TCP sending window is determined from: $win = min(cwnd + dwnd, awnd)$, where $awnd$ is the window advertised by the receiver. For $cwnd$ on the arrival of an ACK: $cwnd = cwnd + 1/win$. The $dwnd$ variable is initially set to zero and is only set when the congestion avoidance is active. $dwnd$ is calculated differently for several scenarios. If the network path is underutilized: $dwnd(t+1) = dwnd(t) + \alpha*dwnd(t)^{k} - 1$. When the network path is congested: $dwnd(t+1) = dwnd(t) - \eta*diff$. When packet loss occurs: $dwnd(t+1) = dwnd(t)(1-\beta) - cwnd/2$. $k$, $\alpha$, $\eta$ and $\beta$ are tunable parameters for optimization of the algorithm. $\eta$ defines the rapidness of reduction of the window when congestion is detected. $\beta$ is the factor used for the multiplicative decrease after loss is detected. $diff$ is calculated from the expected throughput and the actual throughput, which are again calculated from the window size and Round Trip Time (RTT).
+The CTCP algorithm is a combination of a loss-based and delay-based congestion protocol \cite{compound-tcp-congestion}. For the loss-based component, the variable conventional congestion window, $cwnd$, was introduced. For the delay-based component, the variable delay window, $dwnd$, was introduced. The TCP sending window is determined from: $win = min(cwnd + dwnd, awnd)$, where $awnd$ is the window advertised by the receiver. For $cwnd$ on the arrival of an ACK: $cwnd = cwnd + 1/win$. The $dwnd$ variable is initially set to zero and is only set when the congestion avoidance is active. $dwnd$ is calculated differently for several scenarios. If the network path is underutilised: $dwnd(t+1) = dwnd(t) + \alpha*dwnd(t)^{k} - 1$. When the network path is congested: $dwnd(t+1) = dwnd(t) - \eta*diff$. When packet loss occurs: $dwnd(t+1) = dwnd(t)(1-\beta) - cwnd/2$. $k$, $\alpha$, $\eta$ and $\beta$ are tunable parameters for optimisation of the algorithm. $\eta$ defines the rapidness of reduction of the window when congestion is detected. $\beta$ is the factor used for the multiplicative decrease after loss is detected. $diff$ is calculated from the expected throughput and the actual throughput, which are again calculated from the window size and Round Trip Time (RTT).
 
 The DCTCP algorithm consists of three components \cite{dctcp-congestion-original}:
 
 \begin{enumerate}
-	\item Simple Marking at the Switch. Based on the marking treshold $K$ a packet is marked with the CE flag. This only occurs when the queue occupancy is greater than K at arrival time. The marking treshold $K$ specifies the minimum value of queue occupancy.
+	\item Simple Marking at the Switch. Based on the marking threshold $K$ a packet is marked with the CE flag. This only occurs when the queue occupancy is greater than K at arrival time. The marking threshold $K$ specifies the minimum value of queue occupancy.
 	\item ECN-Echo at receiver. The receiver running the DCTCP algorithm ACKs every packet and sets the ECN-Echo flag only if the packet was marked with CE. The ECN-Echo flag is used to notify the sender of congestion in the network.
 	\item Controller at the sender. The sender has an estimate of the fraction of packets that are marked with CE. This is based on the actual fraction of packets that were marked, the weight given to the new estimate compared to the past weight. This results in $\alpha$. $\alpha$ is used to indicate the congestion on a network with a maximum of value 1, indicating a congested network, and a minimum value of 0, indicating no congestion in the network. DCTCP cuts the window size using $\alpha$: $cwnd = cwnd * (1 - \alpha/2)$. This results in a low queue length, but ensuring high throughput.\\
 \end{enumerate}
@@ -292,7 +292,7 @@ The BIC algorithm controls its windows based on the size of windows \cite{bic-tc
 \end{enumerate}
 In case the current window size becomes greater than $W_{max}$ a slow start strategy is performed to determine a new $W_{max}$: $W_{max} + \alpha * S_{min}$, where $\alpha$ is a multiplier. The multiplier is increased by one until $S_{min} * \alpha >= S_{max}$ or when losses occur. In the case of loss a new value for $W_{max}$ will be set.
 
-The CUBIC algorithm is a successor of the BIC algorithm \cite{cubic-tcp-congestion}. In case of a loss event $W_{max}$, which is the maximum window size, is registered. This is followed by a multiplicative decrease of the congestion window by factor $\beta$. If an ACK in congestion avoidance is received and the current window size $cwnd$ is less than $W_{max}$, the algorithm uses the concave profile to increase the window size according to the formula: $cwnd = \frac{W(t+RTT)-cwnd}{cwnd}$. If $cwnd$ is larger than $W_{max}$, the convex profile is used to increase the window size according to the same formula as the concave profile. In both formulas $t$ is the time elapsed from the last window reducation.
+The CUBIC algorithm is a successor of the BIC algorithm \cite{cubic-tcp-congestion}. In case of a loss event $W_{max}$, which is the maximum window size, is registered. This is followed by a multiplicative decrease of the congestion window by factor $\beta$. If an ACK in congestion avoidance is received and the current window size $cwnd$ is less than $W_{max}$, the algorithm uses the concave profile to increase the window size according to the formula: $cwnd = \frac{W(t+RTT)-cwnd}{cwnd}$. If $cwnd$ is larger than $W_{max}$, the convex profile is used to increase the window size according to the same formula as the concave profile. In both formulas $t$ is the time elapsed from the last window reduction.
 
 
 \subsection{Experiments' Results}\label{sub:experiment-results}
@@ -371,16 +371,16 @@ algorithms in the network.
 
 \subsubsection{Traffic shaping based Monitoring}
 
-With the use of a hypothetical TCP congestion control algorithm that is unfair towards other flows, the bandwidth allocation to one customer would be higher than to other customers. When a TCP flow shows an aggressive increase and keeps pushing data over the network, other (fair) algorithms will reduce the transmission rate as packet loss occurs. One important condition for this unfair congestion control algorithm is that it should not be agressive to the extent of causing a denial of service.
+With the use of a hypothetical TCP congestion control algorithm that is unfair towards other flows, the bandwidth allocation to one customer would be higher than to other customers. When a TCP flow shows an aggressive increase and keeps pushing data over the network, other (fair) algorithms will reduce the transmission rate as packet loss occurs. One important condition for this unfair congestion control algorithm is that it should not be aggressive to the extent of causing a denial of service.
 
-To mitigate this, the bandwidth usage per server could be monitored, prioritizing the traffic sent by some servers. The solution uses traffic shaping to control the priority of the traffic per server:
+To mitigate this, the bandwidth usage per server could be monitored, prioritising the traffic sent by some servers. The solution uses traffic shaping to control the priority of the traffic per server:
 
 \begin{enumerate}
-	\item The monitoring solution measures periodically whether the bandwidth in the link is fully utilized. If this is the case, the next step will be performed. If not, it continues monitoring the link utilization.
+	\item The monitoring solution measures periodically whether the bandwidth in the link is fully utilised. If this is the case, the next step will be performed. If not, it continues monitoring the link utilisation.
 	\item The monitoring solution calculates periodically per server whether its bandwidth usage deviates more than $\alpha$ from the average bandwidth usage. $\alpha$ is deviated bandwidth and is set according to an acceptable deviation value. The following formula is used to calculate the standard deviation: $s_{i} = \sqrt{\frac{\sum_{i=1}^N (x_i - \overline{x})^2}{N-1} }$. $N$ is the amount of active servers on the link. $\overline{x}$ is the average amount of bandwidth for all active servers on the link. $x_i$ is the bandwidth of the current server and $s_{i}$ shows the standard deviation in bandwidth for server $i$. If $s_{i}$ is a negative value, no priority change will be applied as the bandwidth usage is lower than average for the server. If $s_{i} <= \alpha$, then no priority change will be applied. If $s_{i} > \alpha$, the priority will be changed to a lower value.
 	\item The monitoring solution provides information of the servers where the priority will be set to a lower value to the traffic shaping controller.
 	\item The traffic shaping controller sets the priority for the servers to a lower value, so that the traffic coming from the servers that use $\alpha$ more than average bandwidth has less preference than traffic closer to the average bandwidth and lower.
-	\item The monitoring solution periodically checks if the bandwidth in the link is still fully utilized. If this is not the case, the traffic shaping policy is reversed again by setting the priority to the default value. If this is the case, the periodical calculations of server bandwidth usage are continued.
+	\item The monitoring solution periodically checks if the bandwidth in the link is still fully utilised. If this is not the case, the traffic shaping policy is reversed again by setting the priority to the default value. If this is the case, the periodical calculations of server bandwidth usage are continued.
 \end{enumerate}
 
 \subsubsection{Detection of unaccepted TCP congestion control algorithms}
@@ -413,7 +413,7 @@ caused by the way Python socket operations are handled in Windows. When
 repeating the test with \texttt{iperf}, which is written in C, this behaviour
 no longer occurs. Even when using the Python equivalent of
 \texttt{while(true)\{ socket.send(data); \}}, the bandwidth allocation did not
-change. We theorize that the difference is caused by something in the
+change. We theorise that the difference is caused by something in the
 \texttt{send} call. An alternative theory is that Microsoft Windows for
 workstations have a different implementation than Microsoft Windows Server
 systems.
@@ -447,7 +447,7 @@ BBR appears to perform better in a congested network than the other tested proto
 
 \section{Conclusion}\label{sec:conclusion}
 
-Our main research question is: {\it How can a datacenter provide a reliable and performant environment for customers when multiple TCP congestion control algorithms are used in the network?} 
+Our main research question is: {\it How can a datacenter provide a reliable and performing environment for customers when multiple TCP congestion control algorithms are used in the network?} 
 
 For the algorithms BIC, BBR, CUBIC and DCTCP, we conclude that they allocate
 bandwidth fairly and do not suppress each other. There is no impact on the
