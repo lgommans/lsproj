@@ -438,7 +438,7 @@ TODO Luc monitoring solution read up
 
 In this paper we have proposed a monitoring solution, which checks for the deviation between the server bandwidth on a link and the average bandwidth used by servers on a link. This solution requires performance testing, such that it is capable of running in a datacenter and not causing delay. Also an $\alpha$ value has to be determined that works in most environments, without ruling out servers that are not running unfair TCP congestion protocols.
 
-TODO bbr turn on halfway through a test, does others' speed lessen?
+BBR appears to perform better in a congested network than the other tested protocols. In order to validate that BBR does not push away other TCP congestion algorithms a new testing method can be used. The data transfer with a TCP congestion algorithm is started and halfway the data transfer with BBR is started. This method shows whether a BBR data transfer has a large influence on the data transfer of other TCP congestion algorithms.
 
 \section{Conclusion}\label{sec:conclusion}
 
