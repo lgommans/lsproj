@@ -9,7 +9,7 @@ open:
 
 deps:
 	# There might be more dependencies, but these were the ones I did not have installed by default
-	sudo apt install texlive-bibtex-extra
+	sudo apt install texlive-bibtex-extra pdfgrep
 	sudo apt-get install --no-install-recommends texlive-latex-extra
 
 clean:
@@ -24,4 +24,11 @@ once:
 
 buildOnChange:
 	while :; do inotifywait paper.tex; make once; done
+
+check:
+	grep -n --color=always -i todo paper.tex || :
+	@echo
+	pdfgrep -n --color=always \\\?\\\? paper.pdf || :
+	@echo
+	pdfgrep -n --color=always \!\! paper.pdf || :
 
