@@ -55,7 +55,7 @@ congestion in the network and distribute bandwidth fairly among users. Several
 algorithms are available to perform this function. Each has a different behaviour
 depending on the network's characteristics.
 
-This report includes a performance and behaviour analysis of different TCP congestion control algorithms in a (simulated) multitenant datacenter network. Based on the results, we will recommend datacenters on measures to take to keep providing a reliable environment for customers when multiple congestion control algorithms are active in the network, for example using Quality of Service or discouraging certain congestion control algorithms. The main research question is: {\it How can a datacenter provide a reliable and performing environment for customers when multiple TCP congestion control algorithms are used in the
+This report includes a performance and behaviour analysis of different TCP congestion control algorithms in a (simulated) multitenant datacenter network. Mario Hock et al. describe in a paper that BBR shows unfair behaviour compared to the CUBIC congestion control algorithm \cite{bbr-congestion-comparison}. Therefore the fairness between TCP congestion control algorithms will also be included in the analysis. Based on the results, we will recommend datacenters on measures to take to keep providing a reliable environment for customers when multiple congestion control algorithms are active in the network, for example using Quality of Service or discouraging certain congestion control algorithms. The main research question is: {\it How can a datacenter provide a reliable and performing environment for customers when multiple TCP congestion control algorithms are used in the
 network?}
 
 In the next section, we will discuss related work. Section \ref{sec:method}
@@ -419,7 +419,7 @@ workstations have a different implementation than Microsoft Windows Server
 systems.
 
 BBR is the best-performing algorithm in our set, because it barely responds to
-packet loss. As mentioned in the results, we see no hard evidence that this
+packet loss. However, we were unable to reproduce the results written in the paper by Mario Hock et al \cite{bbr-congestion-comparison}. We used multiple values to simulate packet loss as well as delay, which simulate having small buffers. BBR is a TCP congestion control protocol that reacts to the minimum RTT in combination with the Bottleneck Bandwidth. We have tested multiple delay values that appear in the real world. The delay values are directly related to the minimum RTT possible on the link. As mentioned in the results, we see no hard evidence that this
 causes other algorithms to reduce their speed further, but there are slight
 indications. For example in the test of DCTCP versus BBR, DCTCP reaches around
 0.2 to 0.6 megabytes per second. In the test of DCTCP versus BIC, this is 0.3
