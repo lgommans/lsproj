@@ -300,14 +300,14 @@ The CUBIC algorithm is a successor of the BIC algorithm \cite{cubic-tcp-congesti
 In our results, we see that all algorithms clearly respond to the simulated
 network circumstances, but not very much to each other. Most algorithms are
 fair towards all other algorithms and will use their half of the connection.
-See figures \ref{fig:fair-1} and \ref{fig:fair-2}.
+See figures \ref{fig:fair-1} and \ref{fig:fair-2}. In figure \ref{fig:fair-1} we see that in the first test run, the increase of BIC is more aggressive than CUBIC's. This is related to the difference in increase functions used by both TCP congestion algorithms. In figure \ref{fig:fair-2} we also see that the increase of BIC is more aggressive than DCTCP's. BIC's increase function is characterised to be more aggressive and that can be seen in the graph as the increase line is more steep. The differences in those increase functions, however, do not show any implications on the fairness of the algorithms as the bandwidth allocation is near to equal for both algorithms. 
 
 \begin{figure}[H]
 	\makebox[\textwidth]{
 		\centering
 		\begin{minipage}{0.5\paperwidth}
 			\centering
-			\includegraphics[width=0.9\textwidth]{figs/cubic-bic-8-0.png}
+			\includegraphics[width=0.9\textwidth]{figs/bic_vs_cubic_8_0.png}
 			\caption{CUBIC vs BIC with 8ms latency and 0\% loss}
 			\label{fig:fair-1}
 		\end{minipage}\hfill
@@ -350,7 +350,7 @@ and did not back off exceptionally when introducing another contender.
 
 BBR is unique in that it barely responds to packet loss but only to delay: even
 with 1.2\% loss, as long as the delay is low (8 milliseconds in our case), it
-reaches 850$\pm$20 megabits per second. Other algorithms will reach much lower
+reaches 850$\pm$20 megabits per second. BBR is a delay based algorithm, so it mainly reacts based on delay. Other algorithms will reach much lower
 speeds (24 megabits is not uncommon), but we see no signs of BBR being the
 cause of that. In tests with BBR nor CTCP, speeds are not higher than when BBR
 is one of the algorithms being tested.
