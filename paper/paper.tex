@@ -350,10 +350,35 @@ and did not back off exceptionally when introducing another contender.
 
 BBR is unique in that it barely responds to packet loss but only to delay: even
 with 1.2\% loss, as long as the delay is low (8 milliseconds in our case), it
-reaches 850$\pm$20 megabits per second. BBR is a delay based algorithm, so it mainly reacts based on delay. Other algorithms will reach much lower
+reaches 850$\pm$20 megabits per second. A comparison between BBR and CUBIC is shown in figure \ref{fig:bbr-cubic}. We see in figure \ref{fig:bbr-cubic} that, compared to CUBIC, the bandwidth usage by the BBR data transfer is higher when 1.2\% packet loss is introduced. However, the link speed of 1Gbps is not fully utilized as is in the paper written by Mario Hock et al. \cite{bbr-congestion-comparison}. We also do not see the CUBIC data transfer responding to the BBR data transfer by reducing its speed in any way. In another test, where CUBIC is compared to BIC with the same parameters, we see CUBIC utilizing the same amount of bandwidth as in the BBR-CUBIC comparison. This is shown in figure \ref{fig:bic-cubic}. In figure \ref{fig:bbr-cubic-0} we show a comparison of a CUBIC data transfer with a BBR data transfer with parameters 8ms latency and 0\% packet loss. This time the total link speed is utilized and we see no unfairness between CUBIC and BBR. We therefore see no signs in our results of BBR being the cause of the CUBIC data transfer being slower. In our results other algorithms also reach much lower
 speeds (24 megabits is not uncommon), but we see no signs of BBR being the
 cause of that. In tests with BBR nor CTCP, speeds are not higher than when BBR
 is one of the algorithms being tested.
+
+\begin{figure}[H]
+	\makebox[\textwidth]{
+		\centering
+		\begin{minipage}{0.5\paperwidth}
+			\centering
+			\includegraphics[width=0.9\textwidth]{figs/cubic_vs_bbr_8_12.png}
+			\caption{CUBIC vs. BBR with 8ms latency and 1.2\% loss}
+			\label{fig:bbr-cubic}
+		\end{minipage}\hfill
+		\begin{minipage}{0.5\paperwidth}
+			\centering
+			\includegraphics[width=0.9\textwidth]{figs/cubic_vs_bic_8_12.png}
+			\caption{CUBIC vs BIC with 8ms latency and 1.2\% loss}
+			\label{fig:bic-cubic}
+		\end{minipage}
+	}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+		\includegraphics[scale=0.4]{figs/cubic_vs_bbr_8_0.png}
+		\caption{CUBIC vs. BBR with 8ms latency and 0\% loss}
+	\label{fig:bbr-cubic-0}
+\end{figure}
 
 The full set of results is available online\cite{git-lsproj}.
 
