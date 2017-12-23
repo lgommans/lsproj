@@ -419,7 +419,7 @@ workstations have a different implementation than Microsoft Windows Server
 systems.
 
 BBR is the best-performing algorithm in our set, because it barely responds to
-packet loss. However, we were unable to reproduce the results written in the paper by Mario Hock et al \cite{bbr-congestion-comparison}. We used multiple values to simulate packet loss as well as delay, which simulate having small buffers. BBR is a TCP congestion control protocol that reacts to the minimum RTT in combination with the Bottleneck Bandwidth. We have tested multiple delay values that appear in the real world. The delay values are directly related to the minimum RTT possible on the link. As mentioned in the results, we see no hard evidence that this
+packet loss. However, we were unable to draw the same conclusions to our results as the conclusions written in the paper by Mario Hock et al \cite{bbr-congestion-comparison}. We used multiple values to simulate packet loss as well as delay, which simulate having small buffers. BBR is a TCP congestion control protocol that reacts to the minimum RTT in combination with the Bottleneck Bandwidth. We have tested multiple delay values that appear in the real world. The delay values are directly related to the minimum RTT possible on the link. As mentioned in the results, we see no hard evidence that this
 causes other algorithms to reduce their speed further, but there are slight
 indications. For example in the test of DCTCP versus BBR, DCTCP reaches around
 0.2 to 0.6 megabytes per second. In the test of DCTCP versus BIC, this is 0.3
