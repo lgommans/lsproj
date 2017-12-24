@@ -2,11 +2,12 @@
 
 \usepackage{float}
 \usepackage[utf8]{inputenc}
-\usepackage[hidelinks]{hyperref}
+\usepackage[hidelinks, pdfauthor={Luc Gommans and Rick van Gorp}, pdftitle={TCP Congestion Algorithms in Datacenters}]{hyperref}
 \usepackage[hyperref=true, natbib=true, style=numeric, backend=bibtex]{biblatex}
 \usepackage{graphicx}
 \bibliography{references.bib}
 \usepackage[top=3.5cm, bottom=3.5cm, left=4.3cm, right=4.3cm]{geometry}
+
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{\baselineskip}
@@ -347,13 +348,13 @@ See figures \ref{fig:fair-1} and \ref{fig:fair-2}. In figure \ref{fig:fair-1} we
 		\begin{minipage}{0.5\paperwidth}
 			\centering
 			\includegraphics[width=0.9\textwidth]{figs/cubic_vs_bic_8_0.png}
-			\caption{CUBIC vs BIC with 8ms latency and 0\% loss}
+			\caption{CUBIC vs. BIC with 8ms latency and 0\% loss}
 			\label{fig:fair-1}
 		\end{minipage}\hfill
 		\begin{minipage}{0.5\paperwidth}
 			\centering
 			\includegraphics[width=0.9\textwidth]{figs/dctcp-bic-8-0.png}
-			\caption{DCTCP vs BIC with 8ms latency and 0\% loss}
+			\caption{DCTCP vs. BIC with 8ms latency and 0\% loss}
 			\label{fig:fair-2}
 		\end{minipage}
 	}
@@ -408,7 +409,7 @@ is one of the algorithms being tested.
 		\begin{minipage}{0.5\paperwidth}
 			\centering
 			\includegraphics[width=0.9\textwidth]{figs/cubic_vs_bic_8_12.png}
-			\caption{CUBIC vs BIC with 8ms latency and 1.2\% loss}
+			\caption{CUBIC vs. BIC with 8ms latency and 1.2\% loss}
 			\label{fig:bic-cubic}
 		\end{minipage}
 	}
